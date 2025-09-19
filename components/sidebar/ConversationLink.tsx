@@ -1,12 +1,12 @@
 "use client";
-import type { Conversation } from "@/lib/db/types";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
-import { Pencil, Trash } from "lucide-react";
 import { deleteConversation } from "@/lib/actions/deleteConversation";
 import { renameConversation } from "@/lib/actions/renameConversation";
-import { useState, useRef, useEffect } from "react";
+import type { Conversation } from "@/lib/db/types";
+import { cn } from "@/lib/utils";
+import { Pencil, Trash } from "lucide-react";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
 interface ConversationLinkProps {
   conversation: Conversation;
@@ -54,7 +54,7 @@ export default function ConversationLink({
   };
 
   return (
-    <div className="group relative flex items-center">
+    <div className="group relative flex items-center bg-stone-200 rounded-sm hover:bg-stone-300">
       {isEditing ? (
         <form onSubmit={handleRename} className="flex-1">
           <input

@@ -79,7 +79,7 @@ export default function Chat({
   // URL sync is now handled by the useModelSelection hook
 
   return (
-    <main className="bg-muted w-full h-screen">
+    <main className="bg-muted w-full h-full">
       <div className="container h-full w-full flex flex-col p-8">
         <ModelSelector
           selectedModel={selectedModel}

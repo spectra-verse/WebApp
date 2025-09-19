@@ -17,7 +17,7 @@ export default function NewChat() {
   }
 
   return (
-    <main className="h-screen flex items-center justify-center px-4">
+    <main className="h-full flex items-center justify-center px-4">
       <div className="w-full max-w-2xl">
         <ModelSelector
           selectedModel={selectedModel}
