@@ -1,0 +1,44 @@
+"use client";
+import React from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+export default function HeroSection() {
+  return (
+    <>
+      <header></header>
+      <main className="overflow-hidden">
+        <section className="relative">
+          <div className="relative py-24 lg:py-28">
+            <div className="mx-auto max-w-7xl px-6 md:px-12">
+              <div className="text-center sm:mx-auto sm:w-10/12 lg:mr-auto lg:mt-0 lg:w-4/5">
+                <h1 className="mt-8 text-6xl font-semibold md:text-5xl xl:text-7xl xl:[line-height:1.25]">
+                  Run all your AI models
+                  <br />{" "}
+                  <span className="border-b-4 border-b-stone-800">locally</span>
+                  <br />
+                  in one place
+                </h1>
+                <p className="mx-auto mt-8 hidden max-w-2xl text-wrap text-lg sm:block">
+                  Your all in one AI companion. Generate Images, videos, codes,
+                  docs, debug your web apps all with Spectraverse interface.
+                </p>
+                <p className="mx-auto mt-6 max-w-2xl text-wrap sm:hidden">
+                  Highly customizable components for building modern websites
+                  and applications, with your personal spark.
+                </p>
+
+                <div className="mt-8">
+                  <Button size="lg" asChild>
+                    <Link href="#">
+                      <span className="text-nowrap">Start with Google</span>
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </>
+  );
+}
