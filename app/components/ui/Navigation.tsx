@@ -1,18 +1,23 @@
 "use client";
 
 import { auth } from "@/lib/auth";
+import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 type Session = typeof auth.$Infer.Session;
 
 export default function Navigation({ session }: { session: Session | null }) {
   const pathname = usePathname();
-
+  const router = useRouter()
   const isActive = (path: string) => {
     return pathname === path;
   };
 
+  async function handleSignout(){
+    await authClient.signOut();
+    router.push('/')
+  }
   return (
     <header className="backdrop-blur-sm  border-gray-200 sticky top-0 z-50 shadow-sm bg-white/75">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -39,6 +44,7 @@ export default function Navigation({ session }: { session: Session | null }) {
           </Link>
 
           <nav className="flex items-center space-x-6">
+            {!session && (   
             <Link
               href="/"
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -48,7 +54,8 @@ export default function Navigation({ session }: { session: Session | null }) {
               }`}
             >
               Home
-            </Link>
+            </Link>)}
+            {!session && (
             <Link
               href="/features"
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -59,6 +66,8 @@ export default function Navigation({ session }: { session: Session | null }) {
             >
               Features
             </Link>
+            )}
+            {!session && (
             <Link
               href="/features"
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -68,7 +77,7 @@ export default function Navigation({ session }: { session: Session | null }) {
               }`}
             >
               Solutions
-            </Link>
+            </Link>)}
             {session && (
               <Link
                 href="/chat"
@@ -77,6 +86,20 @@ export default function Navigation({ session }: { session: Session | null }) {
                 Chat
               </Link>
             )}
+            {
+              session && (
+              <button
+              onClick={handleSignout}
+                className={`cursor-pointer px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  isActive("/explore")
+                    ? "text-indigo-600 bg-indigo-50"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+              Sign out
+              </button>
+              )
+            }
             {!session && (
               <Link
                 href="/auth"
