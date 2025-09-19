@@ -2,8 +2,8 @@
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { createConversation } from "@/lib/actions/createConversation";
-import { Loader, Send } from "lucide-react";
 import { ChatRequestOptions } from "ai";
+import { Loader, SendHorizontal } from "lucide-react";
 import { useRef, useTransition } from "react";
 
 interface ChatSubmitProps {
@@ -78,9 +78,9 @@ export default function ChatSubmit({
         type="submit"
         size="icon"
         disabled={pending || !input || !selectedModel || isStreaming}
-        className="absolute top-1/2 transform -translate-y-1/2 right-4 rounded-full disabled:opacity-50"
+        className="absolute top-1/2 transform -translate-y-1/2 right-4 rounded-sm disabled:opacity-50"
       >
-        <Send size={24} />
+        <SendHorizontal size={24} />
       </Button>
     </form>
   );
