@@ -1,8 +1,8 @@
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import ChatClient from "./ChatClient";
-
+import { Suspense } from "react";
+import NewChat from "@/components/chat/NewChat";
 export default async function ChatPage() {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -10,5 +10,15 @@ export default async function ChatPage() {
   if (!session) {
     redirect("/auth");
   }
-  return <ChatClient />;
+  return (
+    <Suspense
+      fallback={
+        <div className="h-screen flex items-center justify-center">
+          Loading...
+        </div>
+      }
+    >
+      <NewChat />
+    </Suspense>
+  );
 }

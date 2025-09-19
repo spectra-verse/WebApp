@@ -4,7 +4,7 @@ import "./globals.css";
 import Navigation from "./components/ui/Navigation";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-
+import Sidebar from "@/components/sidebar/Sidebar";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -32,6 +32,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Navigation session={session} />
+        <Sidebar />
         {children}
       </body>
     </html>
