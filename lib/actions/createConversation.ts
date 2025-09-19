@@ -1,14 +1,14 @@
 "use server";
 
 import { insertConversation } from "@/lib/db/conversations";
+import { coreUserMessageSchema } from "ai";
 // import { generateText } from "ai";
 import { randomUUID } from "crypto";
 import { redirect } from "next/navigation";
 // import { ollama } from "../ollama/client";
 
 async function generateConversationName(userMessage: string) {
-  console.log(userMessage);
-  return "hi";
+  return `${userMessage.substring(0, 15)}...`;
   // we need a fast model for this
   // const model = "llama3.2";
   // const nameResult = await generateText({
@@ -35,6 +35,6 @@ export async function createConversation(message: string, model: string) {
   const encodedMessage = Buffer.from(message).toString("base64");
 
   redirect(
-    `/conversations/${conversationId}?q=${encodedMessage}&model=${model}`,
+    `/conversations/${conversationId}?q=${encodedMessage}&model=${model}`
   );
 }
