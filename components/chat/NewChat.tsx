@@ -86,9 +86,9 @@ export default function NewChat() {
   ];
 
   return (
-    <main className="h-full flex items-center justify-center px-4">
+    <main className="h-full flex items-center justify-center px-4 bg-background text-foreground">
       <div className="w-full max-w-2xl">
-        <h1 className="text-3xl font-medium mb-12">
+        <h1 className="text-3xl font-medium mb-12 text-foreground">
           Choose a prompt or start typing
         </h1>
         {/* Prompt Sections */}

@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 type Session = typeof auth.$Infer.Session;
 
@@ -19,7 +20,7 @@ export default function Navigation({ session }: { session: Session | null }) {
     router.push('/')
   }
   return (
-    <header className="backdrop-blur-sm  border-gray-200 sticky top-0 z-50 shadow-sm bg-white/75">
+    <header className="backdrop-blur-sm border-border sticky top-0 z-50 shadow-sm bg-background/75">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center space-x-3">
@@ -38,19 +39,19 @@ export default function Navigation({ session }: { session: Session | null }) {
                 />
               </svg>
             </div>
-            <span className="text-xl font-bold text-gray-900">
+            <span className="text-xl font-bold text-foreground">
               Spectraverse
             </span>
           </Link>
 
           <nav className="flex items-center space-x-6">
-            {!session && (   
+            {!session && (
             <Link
               href="/"
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                 isActive("/")
-                  ? "text-indigo-600 bg-indigo-50"
-                  : "text-gray-600 hover:text-gray-900"
+                  ? "text-primary bg-primary/10"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               Home
@@ -60,8 +61,8 @@ export default function Navigation({ session }: { session: Session | null }) {
               href="/features"
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                 isActive("/features")
-                  ? "text-indigo-600 bg-indigo-50"
-                  : "text-gray-600 hover:text-gray-900"
+                  ? "text-primary bg-primary/10"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               Features
@@ -72,8 +73,8 @@ export default function Navigation({ session }: { session: Session | null }) {
               href="/features"
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                 isActive("/features")
-                  ? "text-indigo-600 bg-indigo-50"
-                  : "text-gray-600 hover:text-gray-900"
+                  ? "text-primary bg-primary/10"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               Solutions
@@ -92,8 +93,8 @@ export default function Navigation({ session }: { session: Session | null }) {
               onClick={handleSignout}
                 className={`cursor-pointer px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                   isActive("/explore")
-                    ? "text-indigo-600 bg-indigo-50"
-                    : "text-gray-600 hover:text-gray-900"
+                    ? "text-primary bg-primary/10"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
               Sign out
@@ -103,11 +104,12 @@ export default function Navigation({ session }: { session: Session | null }) {
             {!session && (
               <Link
                 href="/auth"
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                className="text-muted-foreground hover:text-foreground px-3 py-2 rounded-md text-sm font-medium transition-colors"
               >
                 Sign In
               </Link>
             )}
+            <ThemeToggle />
           </nav>
         </div>
       </div>

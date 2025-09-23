@@ -4,7 +4,7 @@ import remarkGfm from "remark-gfm";
 
 const MarkdownRenderer = ({ content }: { content: string }) => {
   return (
-    <div className="prose max-w-full">
+    <div className="prose prose-slate dark:prose-invert max-w-full">
       <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
     </div>
   );

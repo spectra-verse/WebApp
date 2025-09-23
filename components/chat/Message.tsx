@@ -10,12 +10,12 @@ export default function Message({ message }: { message: MessageType }) {
 
     return (
       <div className="flex flex-col gap-3 p-6">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 text-foreground">
           <Bot />
           Assistant:
         </div>
         {thinking && (
-          <div className="pl-4 border-l-2 border-gray-300 text-sm text-gray-500 mb-2 whitespace-pre-wrap">
+          <div className="pl-4 border-l-2 border-muted-foreground text-sm text-muted-foreground mb-2 whitespace-pre-wrap">
             {thinking}
           </div>
         )}
