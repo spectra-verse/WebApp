@@ -29,7 +29,7 @@ export default async function Sidebar() {
       <div className="flex-shrink-0 p-4 border-t bg-gray-50">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
+            <div className="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
               {user?.name?.charAt(0).toUpperCase()}
             </div>
             <span className="text-sm font-medium text-gray-900 truncate">

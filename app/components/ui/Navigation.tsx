@@ -10,21 +10,21 @@ type Session = typeof auth.$Infer.Session;
 
 export default function Navigation({ session }: { session: Session | null }) {
   const pathname = usePathname();
-  const router = useRouter()
+  const router = useRouter();
   const isActive = (path: string) => {
     return pathname === path;
   };
 
-  async function handleSignout(){
+  async function handleSignout() {
     await authClient.signOut();
-    router.push('/')
+    router.push("/");
   }
   return (
     <header className="backdrop-blur-sm border-border sticky top-0 z-50 shadow-sm bg-background/75">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-slate-600 rounded-lg flex items-center justify-center">
               <svg
                 className="w-5 h-5 text-white"
                 fill="none"
@@ -46,61 +46,61 @@ export default function Navigation({ session }: { session: Session | null }) {
 
           <nav className="flex items-center space-x-6">
             {!session && (
-            <Link
-              href="/"
-              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                isActive("/")
-                  ? "text-primary bg-primary/10"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Home
-            </Link>)}
-            {!session && (
-            <Link
-              href="/features"
-              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                isActive("/features")
-                  ? "text-primary bg-primary/10"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Features
-            </Link>
+              <Link
+                href="/"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  isActive("/")
+                    ? "text-primary bg-primary/10"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Home
+              </Link>
             )}
             {!session && (
-            <Link
-              href="/features"
-              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                isActive("/features")
-                  ? "text-primary bg-primary/10"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Solutions
-            </Link>)}
+              <Link
+                href="/features"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  isActive("/features")
+                    ? "text-primary bg-primary/10"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Features
+              </Link>
+            )}
+            {!session && (
+              <Link
+                href="/features"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  isActive("/features")
+                    ? "text-primary bg-primary/10"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Solutions
+              </Link>
+            )}
             {session && (
               <Link
                 href="/chat"
-                className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
+                className="bg-slate-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-700 transition-colors"
               >
-                Chat
+                Start a new conversation
               </Link>
             )}
-            {
-              session && (
+            {session && (
               <button
-              onClick={handleSignout}
+                onClick={handleSignout}
                 className={`cursor-pointer px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                   isActive("/explore")
                     ? "text-primary bg-primary/10"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-              Sign out
+                Sign out
               </button>
-              )
-            }
+            )}
             {!session && (
               <Link
                 href="/auth"
