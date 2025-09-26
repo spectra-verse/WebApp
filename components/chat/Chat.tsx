@@ -16,6 +16,7 @@ interface ChatProps {
   conversationId: string;
   initialModel?: string;
   showSidebar?: boolean;
+  email?: string;
 }
 
 export default function Chat({
@@ -23,6 +24,7 @@ export default function Chat({
   conversationId,
   initialModel,
   showSidebar = false,
+  email,
 }: ChatProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -95,7 +97,7 @@ export default function Chat({
 
           <div className="flex-1 overflow-y-auto mb-4" onScroll={handleScroll}>
             {messages.map((message) => (
-              <Message key={message.id} message={message} />
+              <Message key={message.id} message={message} email={email} />
             ))}
             <div ref={messagesEndRef} />
           </div>
@@ -109,9 +111,7 @@ export default function Chat({
         </div>
 
         {/* Right Sidebar - Only show if showSidebar is true */}
-        {showSidebar && (
-          <ModelInfoSidebar className="hidden lg:block" />
-        )}
+        {showSidebar && <ModelInfoSidebar className="hidden lg:block" />}
       </div>
     </main>
   );

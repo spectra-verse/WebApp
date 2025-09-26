@@ -1,10 +1,8 @@
-import { auth } from "@/lib/auth";
 import { getAllConversations } from "@/lib/db/conversations";
+import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import ConversationLink from "./ConversationLink";
 import NewChatButton from "./NewChatButton";
 import SidebarContent from "./SidebarContent";
-// import SidebarToggle from "./SidebarToggle";
 import SidebarFooter from "./SidebarFooter";
 import ShowToggleButton from "./ShowToggleButton";
 import Link from "next/link";

@@ -1,4 +1,6 @@
 import { Suspense } from "react";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 import Chat from "@/components/chat/Chat";
 import {
   getConversation,
@@ -13,6 +15,8 @@ interface ConversationPageProps {
 export default async function ConversationPage({
   params,
 }: ConversationPageProps) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  const user = session?.user;
   const { conversationId } = await params;
   const messages = getConversationMessages(conversationId);
   const conversation = getConversation(conversationId);
@@ -37,6 +41,7 @@ export default async function ConversationPage({
         conversationId={conversationId}
         initialModel={conversation?.model}
         showSidebar={true}
+        email={user?.email}
       />
     </Suspense>
   );

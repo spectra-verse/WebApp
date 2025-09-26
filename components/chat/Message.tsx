@@ -1,9 +1,16 @@
 import { Card, CardHeader } from "@/components/ui/card";
 import { Message as MessageType } from "ai";
-import { Bot, ContactRound, User } from "lucide-react";
+import { Bot, ContactRound } from "lucide-react";
 import MdRender from "./MdRender";
+import UserAvatar from "../ui/UserAvatar";
 
-export default function Message({ message }: { message: MessageType }) {
+export default function Message({
+  message,
+  email,
+}: {
+  message: MessageType;
+  email: string;
+}) {
   const { role, content } = message;
   if (role === "assistant") {
     const { thinking, response } = parseAssistantContent(content);
@@ -28,7 +35,8 @@ export default function Message({ message }: { message: MessageType }) {
       <CardHeader>
         <div className="flex items-center gap-2">
           {/* <User size={36} /> */}
-          <ContactRound size={24} />
+          {/* <ContactRound size={24} /> */}
+          <UserAvatar email={email} size={30} />
           {content}
         </div>
       </CardHeader>
