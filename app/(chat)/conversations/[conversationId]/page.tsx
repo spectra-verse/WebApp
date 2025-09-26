@@ -36,6 +36,7 @@ export default async function ConversationPage({
         initialMessages={messagesMapped}
         conversationId={conversationId}
         initialModel={conversation?.model}
+        showSidebar={true}
       />
     </Suspense>
   );

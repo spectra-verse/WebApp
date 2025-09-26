@@ -8,18 +8,21 @@ import ChatSubmit from "./ChatSubmit";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Message from "./Message";
 import ModelSelector from "./ModelSelector";
+import ModelInfoSidebar from "./ModelInfoSidebar";
 import { useModelSelection } from "@/hooks/useModelSelection";
 
 interface ChatProps {
   initialMessages?: MessageType[];
   conversationId: string;
   initialModel?: string;
+  showSidebar?: boolean;
 }
 
 export default function Chat({
   initialMessages = [],
   conversationId,
   initialModel,
+  showSidebar = false,
 }: ChatProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -80,27 +83,35 @@ export default function Chat({
 
   return (
     <main className="bg-background w-full h-full">
-      <div className="container h-full w-full flex flex-col p-8">
-        <ModelSelector
-          selectedModel={selectedModel}
-          setSelectedModel={setSelectedModel}
-          models={models}
-          isLoading={modelsLoading}
-        />
+      <div className="h-full w-full flex">
+        {/* Main Chat Area */}
+        <div className="flex-1 flex flex-col p-8">
+          <ModelSelector
+            selectedModel={selectedModel}
+            setSelectedModel={setSelectedModel}
+            models={models}
+            isLoading={modelsLoading}
+          />
 
-        <div className="flex-1 overflow-y-auto mb-4" onScroll={handleScroll}>
-          {messages.map((message) => (
-            <Message key={message.id} message={message} />
-          ))}
-          <div ref={messagesEndRef} />
+          <div className="flex-1 overflow-y-auto mb-4" onScroll={handleScroll}>
+            {messages.map((message) => (
+              <Message key={message.id} message={message} />
+            ))}
+            <div ref={messagesEndRef} />
+          </div>
+          <ChatSubmit
+            handleInputChange={handleInputChange}
+            isStreaming={isLoading}
+            input={input}
+            handleSubmit={handleSubmit}
+            selectedModel={selectedModel}
+          />
         </div>
-        <ChatSubmit
-          handleInputChange={handleInputChange}
-          isStreaming={isLoading}
-          input={input}
-          handleSubmit={handleSubmit}
-          selectedModel={selectedModel}
-        />
+
+        {/* Right Sidebar - Only show if showSidebar is true */}
+        {showSidebar && (
+          <ModelInfoSidebar className="hidden lg:block" />
+        )}
       </div>
     </main>
   );
