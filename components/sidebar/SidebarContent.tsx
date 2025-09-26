@@ -15,7 +15,7 @@ export default function SidebarContent({ children }: SidebarContentProps) {
       className={`
         bg-stone-100 border-r border-r-stone-200
         flex flex-col h-full transition-all duration-300 ease-in-out
-        ${isCollapsed ? "w-16" : "w-[300px]"}
+        ${isCollapsed ? "w-16" : "w-[360px]"}
       `}
     >
       {children}

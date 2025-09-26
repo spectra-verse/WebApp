@@ -9,6 +9,7 @@ import SidebarFooter from "./SidebarFooter";
 import ShowToggleButton from "./ShowToggleButton";
 import Link from "next/link";
 import Logo from "@/components/ui/Logo";
+
 export default async function Sidebar() {
   const session = await auth.api.getSession({ headers: await headers() });
   const user = session?.user;

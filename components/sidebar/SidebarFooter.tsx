@@ -8,12 +8,12 @@ import SidebarToggle from "./SidebarToggle";
 interface SidebarFooterProps {
   user?: {
     name?: string;
+    email?: string;
   };
 }
 
 export default function SidebarFooter({ user }: SidebarFooterProps) {
   const { isCollapsed } = useSidebar();
-
   if (isCollapsed) {
     return (
       <div className="flex-shrink-0 p-4 bg-stone-100 dark:bg-gray-800">
@@ -55,4 +55,3 @@ export default function SidebarFooter({ user }: SidebarFooterProps) {
     </div>
   );
 }
-
