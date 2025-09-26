@@ -23,7 +23,7 @@ export default async function Sidebar() {
           </Link>
           <ShowToggleButton />
         </div>
-        <div className="flex items-center justify-between mt-4">
+        <div className="flex items-center justify-between mt-12">
           <div className="flex-1">
             <NewChatButton />
           </div>
