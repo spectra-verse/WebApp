@@ -3,14 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { createConversation } from "@/lib/actions/createConversation";
 import { ChatRequestOptions } from "ai";
-import { Loader, SendHorizontal } from "lucide-react";
+import { Loader, SendHorizontal, Paperclip, ImageDown } from "lucide-react";
 import { useRef, useTransition } from "react";
 
 interface ChatSubmitProps {
   handleInputChange?: (
     e:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>
+      | React.ChangeEvent<HTMLTextAreaElement>,
   ) => void;
   input: string;
   selectedModel?: string;
@@ -18,7 +18,7 @@ interface ChatSubmitProps {
   isNewChat?: boolean;
   handleSubmit?: (
     e: React.FormEvent<HTMLFormElement>,
-    chatRequestOptions?: ChatRequestOptions
+    chatRequestOptions?: ChatRequestOptions,
   ) => void;
 }
 
@@ -60,8 +60,9 @@ export default function ChatSubmit({
     <form ref={formRef} onSubmit={onSubmit} className="mt-auto relative">
       <div className="relative">
         <Textarea
-          className="w-full text-lg bg-background"
-          placeholder="Say something"
+          rows={6}
+          className="w-full text-lg bg-background p-6"
+          placeholder="Ask anything...."
           onKeyDown={handleKeyDown}
           disabled={pending}
           name="message"
@@ -78,9 +79,25 @@ export default function ChatSubmit({
         type="submit"
         size="icon"
         disabled={pending || !input || !selectedModel || isStreaming}
-        className="absolute top-1/2 transform -translate-y-1/2 right-4 rounded-sm disabled:opacity-50"
+        className="absolute top-4/5 transform -translate-y-1/2 right-4 rounded-sm disabled:opacity-50"
       >
         <SendHorizontal size={24} />
+      </Button>
+      <Button
+        type="button"
+        disabled={pending || !selectedModel || isStreaming}
+        className="bg-stone-300 text-black absolute top-4/5 transform -translate-y-1/3 left-4 rounded-sm disabled:opacity-50"
+      >
+        <Paperclip size={24} />
+        Attach
+      </Button>
+      <Button
+        type="submit"
+        disabled={pending || !selectedModel || isStreaming}
+        className="bg-stone-300 text-foreground absolute top-4/5 transform -translate-y-1/3 left-30 rounded-sm disabled:opacity-50"
+      >
+        <ImageDown size={24} />
+        Upload
       </Button>
     </form>
   );

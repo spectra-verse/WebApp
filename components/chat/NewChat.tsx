@@ -6,14 +6,17 @@ import { useState } from "react";
 import ChatSubmit from "./ChatSubmit";
 import ModelSelector from "./ModelSelector";
 import PromptCard from "./PromptCard";
+import { useSidebar } from "../providers/sidebar-provider";
+import Image from "next/image";
 
 export default function NewChat() {
+  const { isCollapsed } = useSidebar();
   const [input, setInput] = useState("");
   const { selectedModel, setSelectedModel, models, isLoading } =
     useModelSelection();
 
   function handleInputChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) {
     setInput(e.target.value);
   }
@@ -87,12 +90,27 @@ export default function NewChat() {
 
   return (
     <main className="h-full flex items-center justify-center px-4 bg-background text-foreground">
-      <div className="w-full max-w-2xl">
-        <h1 className="text-3xl font-medium mb-12 text-foreground">
+      <div className={`w-full ${isCollapsed ? "max-w-5xl" : "max-w-4xl"}`}>
+        <div className="flex justify-center items-center">
+          <Image src="/logo_1.png" width={60} height={60} alt="Spectraverse" />
+        </div>
+        <h1 className="text-3xl text-center mt-8 font-medium mb-12 text-foreground">
           Choose a prompt or start typing
         </h1>
+        <ModelSelector
+          selectedModel={selectedModel}
+          setSelectedModel={setSelectedModel}
+          models={models}
+          isLoading={isLoading}
+        />
+        <ChatSubmit
+          input={input}
+          isNewChat
+          handleInputChange={handleInputChange}
+          selectedModel={selectedModel}
+        />
         {/* Prompt Sections */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8 mb-6">
           {promptCards.map((card) => (
             <PromptCard
               key={card.id}
@@ -107,19 +125,6 @@ export default function NewChat() {
             />
           ))}
         </div>
-
-        <ModelSelector
-          selectedModel={selectedModel}
-          setSelectedModel={setSelectedModel}
-          models={models}
-          isLoading={isLoading}
-        />
-        <ChatSubmit
-          input={input}
-          isNewChat
-          handleInputChange={handleInputChange}
-          selectedModel={selectedModel}
-        />
       </div>
     </main>
   );
