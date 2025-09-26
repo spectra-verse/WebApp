@@ -9,6 +9,7 @@ import SidebarFooter from "./SidebarFooter";
 import ShowToggleButton from "./ShowToggleButton";
 import Link from "next/link";
 import Logo from "@/components/ui/Logo";
+import RecentChats from "./RecentChats";
 
 export default async function Sidebar() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -32,13 +33,7 @@ export default async function Sidebar() {
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto p-4">
-        <div className="flex flex-col gap-2">
-          {conversations.map((c) => (
-            <ConversationLink key={c.id} conversation={c} />
-          ))}
-        </div>
-      </div>
+      <RecentChats conversations={conversations} />
 
       {/* Fixed Footer - User & Settings */}
       <SidebarFooter user={user} />
