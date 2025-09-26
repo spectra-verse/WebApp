@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/select";
 import { Loader2 } from "lucide-react";
 import { FormattedModel } from "@/hooks/useOllamaModels";
-
+import { usePathname } from "next/navigation";
 export default function ModelSelector({
   selectedModel,
   setSelectedModel,
@@ -19,8 +19,12 @@ export default function ModelSelector({
   models: FormattedModel[];
   isLoading: boolean;
 }) {
+  const pathname = usePathname();
+  const isActive = (path: string) => {
+    return pathname === path;
+  };
   return (
-    <div className="mb-4">
+    <div className="mb-12 flex w-full items-center justify-between">
       <Select
         value={selectedModel}
         onValueChange={setSelectedModel}
@@ -44,6 +48,18 @@ export default function ModelSelector({
           ))}
         </SelectContent>
       </Select>
+      <div>
+        <button
+          onClick={() => {}}
+          className={`cursor-pointer px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+            isActive("/chat")
+              ? "text-primary bg-primary/10"
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Sign out
+        </button>
+      </div>
     </div>
   );
 }

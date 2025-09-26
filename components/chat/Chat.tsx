@@ -71,7 +71,7 @@ export default function Chat({
       const newParams = new URLSearchParams(searchParams.toString());
       newParams.delete("q");
       router.replace(
-        `${pathname}${newParams.toString() ? `?${newParams.toString()}` : ""}`
+        `${pathname}${newParams.toString() ? `?${newParams.toString()}` : ""}`,
       );
     }
   }, [searchParams, append, router, pathname]);
@@ -87,7 +87,8 @@ export default function Chat({
           models={models}
           isLoading={modelsLoading}
         />
-        <div className="flex-1 overflow-y-auto" onScroll={handleScroll}>
+
+        <div className="flex-1 overflow-y-auto mb-4" onScroll={handleScroll}>
           {messages.map((message) => (
             <Message key={message.id} message={message} />
           ))}

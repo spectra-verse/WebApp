@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { signIn, signInSocial, signUp } from "@/lib/actions/auth-actions";
+import { signIn, signUp } from "@/lib/actions/auth-actions";
 import { authClient } from "@/lib/auth-client";
+import { useState } from "react";
 
 export default function AuthClientPage() {
   const [isSignIn, setIsSignIn] = useState(true);
@@ -12,8 +11,6 @@ export default function AuthClientPage() {
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const router = useRouter();
-  const searchParams = useSearchParams();
 
   // Get callback URL from search params (set by middleware)
 

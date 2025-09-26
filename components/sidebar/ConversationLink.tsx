@@ -3,10 +3,11 @@ import { deleteConversation } from "@/lib/actions/deleteConversation";
 import { renameConversation } from "@/lib/actions/renameConversation";
 import type { Conversation } from "@/lib/db/types";
 import { cn } from "@/lib/utils";
-import { Pencil, Trash } from "lucide-react";
+import { Pencil, Trash, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useSidebar } from "@/components/providers/sidebar-provider";
 
 interface ConversationLinkProps {
   conversation: Conversation;
@@ -17,6 +18,7 @@ export default function ConversationLink({
 }: ConversationLinkProps) {
   const { conversationId } = useParams();
   const router = useRouter();
+  const { isCollapsed } = useSidebar();
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(conversation.name);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -52,6 +54,24 @@ export default function ConversationLink({
     e.stopPropagation();
     setIsEditing(true);
   };
+
+  if (isCollapsed) {
+    return (
+      <div className="group relative flex justify-center">
+        <Link
+          key={conversation.id}
+          className={cn(
+            "p-2 rounded-sm hover:bg-stone-300 transition-colors",
+            conversationId === conversation.id && "bg-slate-300",
+          )}
+          href={`/conversations/${conversation.id}`}
+          title={conversation.name}
+        >
+          <MessageSquare className="w-4 h-4 text-slate-500" />
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="group relative flex items-center bg-stone-200 rounded-sm hover:bg-stone-300">

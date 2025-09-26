@@ -1,14 +1,19 @@
 "use client";
 import { FilePenLine } from "lucide-react";
-
-
 import Link from "next/link";
+import { useSidebar } from "@/components/providers/sidebar-provider";
 
 export default function NewChatButton() {
+  const { isCollapsed } = useSidebar();
+
   return (
-    <Link className="bg-slate-600 p-2 rounded text-sm flex gap-4 text-white mb-4" href="/chat">
-      <FilePenLine />
-      Start a new conversation
+    <Link
+      className="bg-violet-200 p-2 rounded text-sm flex gap-2 text-stone-800 mb-4 justify-center items-center hover:bg-slate-700 transition-colors"
+      href="/chat"
+      title={isCollapsed ? "Start a new conversation" : undefined}
+    >
+      <FilePenLine className="w-4 h-4" />
+      {!isCollapsed && <span>Start a new conversation</span>}
     </Link>
   );
 }

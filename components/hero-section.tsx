@@ -1,7 +1,5 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
-import Link from "next/link";
 import React, { useState } from "react";
 
 export default function HeroSection() {
@@ -19,7 +17,7 @@ export default function HeroSection() {
       setError(
         `Error authenticating with ${provider}: ${
           err instanceof Error ? err.message : "Unknown error"
-        }`
+        }`,
       );
     } finally {
       setIsLoading(false);
