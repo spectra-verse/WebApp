@@ -4,6 +4,7 @@ import SettingsIcon from "@/components/ui/SettingsIcon";
 import { useSidebar } from "@/components/providers/sidebar-provider";
 import { User } from "lucide-react";
 import SidebarToggle from "./SidebarToggle";
+import UserAvatar from "../ui/UserAvatar";
 
 interface SidebarFooterProps {
   user?: {
@@ -40,8 +41,12 @@ export default function SidebarFooter({ user }: SidebarFooterProps) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3 min-w-0">
           <div className="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
-            {user?.name?.charAt(0).toUpperCase() || (
-              <User className="w-4 h-4" />
+            {user?.email ? (
+              <UserAvatar email={user.email} />
+            ) : (
+              user?.name?.charAt(0).toUpperCase() || (
+                <User className="w-4 h-4" />
+              )
             )}
           </div>
           <span className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
