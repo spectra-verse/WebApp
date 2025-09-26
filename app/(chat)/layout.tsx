@@ -23,12 +23,11 @@ export default async function ChatLayout({
                 <UserMenu
                   user={{
                     name: session.user.name,
-                    email: session.user.email
+                    email: session.user.email,
                   }}
                 />
               )}
             </div>
-            {/* <Navigation session={session} /> */}
             {children}
           </main>
         </div>
