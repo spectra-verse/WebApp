@@ -34,3 +34,11 @@ export interface PromptCard {
   iconHoverColor: string;
   iconTextColor: string;
 }
+
+export interface UserSettings {
+  id: string;
+  userId: string;
+  ollamaUrl: string;
+  createdAt: Date;
+  updatedAt: Date;
+}

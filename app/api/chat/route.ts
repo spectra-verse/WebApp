@@ -1,6 +1,6 @@
 import { insertConversationMessages } from "@/lib/db/messages";
 import { updateConversationModel } from "@/lib/db/conversations";
-import { ollama } from "@/lib/ollama/client";
+import { getUserOllamaClient } from "@/lib/ollama/getUserOllamaClient";
 import { streamText } from "ai";
 import { randomUUID } from "crypto";
 import { MessageData } from "@/lib/db/types";
@@ -23,8 +23,10 @@ export async function POST(req: Request) {
   const lastUserMsg = messages[(messages?.length ?? 1) - 1];
 
   try {
+    const userOllama = await getUserOllamaClient();
+
     const result = streamText({
-      model: ollama(model || "deepseek-r1:8b"),
+      model: userOllama(model || "deepseek-r1:8b"),
       messages,
       onFinish: async (event) => {
         await saveMessages(lastUserMsg, event.text, conversationId);

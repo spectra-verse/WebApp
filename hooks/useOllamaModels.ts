@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchOllamaModels } from "@/lib/ollama/client";
+import { fetchUserOllamaModels } from "@/lib/ollama/getUserOllamaClient";
 
 export type FormattedModel = {
   value: string;
@@ -26,7 +26,7 @@ export function useOllamaModels() {
       setError(null);
 
       try {
-        const ollamaModels = await fetchOllamaModels();
+        const ollamaModels = await fetchUserOllamaModels();
 
         if (ollamaModels.length > 0) {
           const formattedModels = ollamaModels.map((model) => ({

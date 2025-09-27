@@ -4,7 +4,7 @@ interface SettingsLayoutProps {
 
 export default function SettingsLayout({ children }: SettingsLayoutProps) {
   return (
-    <div className="flex-1 overflow-auto">
+    <div className="h-full overflow-auto">
       <div className="container max-w-4xl mx-auto p-6 space-y-8">
         <div className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
