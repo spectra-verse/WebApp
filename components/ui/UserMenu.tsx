@@ -30,8 +30,8 @@ export default function UserMenu({ user }: UserMenuProps) {
   };
 
   const handleProfile = () => {
-    // Navigate to profile page - adjust route as needed
-    router.push("/profile");
+    // Navigate to settings page
+    router.push("/settings");
     setIsOpen(false);
   };
 
