@@ -9,6 +9,7 @@ import { Loader2, CheckCircle, XCircle, Settings } from "lucide-react";
 import { updateUserSettings } from "@/lib/actions/updateUserSettings";
 import { testOllamaConnection } from "@/lib/actions/testOllamaConnection";
 import { UserSettings } from "@/lib/db/types";
+import ModelList from "./ModelList";
 
 interface OllamaSettingsProps {
   initialSettings: UserSettings;
@@ -23,6 +24,7 @@ export default function OllamaSettings({ initialSettings }: OllamaSettingsProps)
     message: string;
   } | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
+  const [modelRefreshTrigger, setModelRefreshTrigger] = useState(0);
 
   useEffect(() => {
     setHasChanges(ollamaUrl !== initialSettings.ollamaUrl);
@@ -51,6 +53,11 @@ export default function OllamaSettings({ initialSettings }: OllamaSettingsProps)
         success: result.success,
         message: result.success ? result.message : result.error || "Connection failed",
       });
+
+      // Refresh models if connection is successful
+      if (result.success) {
+        setModelRefreshTrigger(prev => prev + 1);
+      }
     } catch (error) {
       setTestResult({
         success: false,
@@ -72,6 +79,9 @@ export default function OllamaSettings({ initialSettings }: OllamaSettingsProps)
         message: "Settings saved successfully",
       });
       setHasChanges(false);
+
+      // Refresh models after saving new URL
+      setModelRefreshTrigger(prev => prev + 1);
     } catch (error) {
       setTestResult({
         success: false,
@@ -174,6 +184,13 @@ export default function OllamaSettings({ initialSettings }: OllamaSettingsProps)
             <span>{testResult.message}</span>
           </div>
         )}
+
+        <div className="border-t pt-6">
+          <ModelList
+            refreshTrigger={modelRefreshTrigger}
+            onRefreshComplete={() => setModelRefreshTrigger(0)}
+          />
+        </div>
 
         <div className="text-xs text-muted-foreground border-t pt-4">
           <p className="font-medium">Default URL: http://localhost:11434/v1</p>
