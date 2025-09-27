@@ -1,6 +1,6 @@
 import { Card, CardHeader } from "@/components/ui/card";
 import { Message as MessageType } from "ai";
-import { Bot, ContactRound } from "lucide-react";
+import { Bot } from "lucide-react";
 import MdRender from "./MdRender";
 import UserAvatar from "../ui/UserAvatar";
 
@@ -34,8 +34,6 @@ export default function Message({
     <Card className="whitespace-pre-wrap">
       <CardHeader>
         <div className="flex items-center gap-2">
-          {/* <User size={36} /> */}
-          {/* <ContactRound size={24} /> */}
           <UserAvatar email={email} size={30} />
           {content}
         </div>

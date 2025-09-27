@@ -23,3 +23,14 @@ export interface Conversation {
   model?: string;
   createdAt: string;
 }
+
+export interface PromptCard {
+  id: string;
+  title: string;
+  subtitle: string;
+  promptText: string;
+  icon: React.ReactNode;
+  iconBgColor: string;
+  iconHoverColor: string;
+  iconTextColor: string;
+}
