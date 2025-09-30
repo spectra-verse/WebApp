@@ -10,6 +10,7 @@ import { updateUserSettings } from "@/lib/actions/updateUserSettings";
 import { testOllamaConnection } from "@/lib/actions/testOllamaConnection";
 import { UserSettings } from "@/lib/db/types";
 import ModelList from "./ModelList";
+import ModelDownload from "./ModelDownload";
 
 interface OllamaSettingsProps {
   initialSettings: UserSettings;
@@ -27,6 +28,7 @@ export default function OllamaSettings({
   } | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
   const [modelRefreshTrigger, setModelRefreshTrigger] = useState(0);
+  const [installedModels, setInstalledModels] = useState<string[]>([]);
 
   useEffect(() => {
     setHasChanges(ollamaUrl !== initialSettings.ollamaUrl);
@@ -193,11 +195,23 @@ export default function OllamaSettings({
         )}
 
         <div className="border-t pt-6">
-          <ModelList
-            refreshTrigger={modelRefreshTrigger}
-            onRefreshComplete={() => setModelRefreshTrigger(0)}
+          <ModelDownload
+            onDownloadComplete={() =>
+              setModelRefreshTrigger((prev) => prev + 1)
+            }
+            installedModels={installedModels}
           />
         </div>
+
+        {/* <div className="border-t pt-6"> */}
+        {/*   <ModelList */}
+        {/*     refreshTrigger={modelRefreshTrigger} */}
+        {/*     onRefreshComplete={() => setModelRefreshTrigger(0)} */}
+        {/*     onModelsLoaded={(models) => */}
+        {/*       setInstalledModels(models.map((m) => m.name)) */}
+        {/*     } */}
+        {/*   /> */}
+        {/* </div> */}
 
         <div className="text-xs text-muted-foreground border-t pt-4">
           <p className="font-medium">Default URL: http://localhost:11434/v1</p>
@@ -209,4 +223,3 @@ export default function OllamaSettings({
     </Card>
   );
 }
-

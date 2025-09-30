@@ -12,11 +12,13 @@ import DeleteModelDialog from "./DeleteModelDialog";
 interface ModelListProps {
   refreshTrigger?: number;
   onRefreshComplete?: () => void;
+  onModelsLoaded?: (models: OllamaModel[]) => void;
 }
 
 export default function ModelList({
   refreshTrigger,
   onRefreshComplete,
+  onModelsLoaded,
 }: ModelListProps) {
   const [models, setModels] = useState<OllamaModel[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -41,21 +43,24 @@ export default function ModelList({
 
         if (result.success) {
           setModels(result.models);
+          onModelsLoaded?.(result.models);
         } else {
           setError(result.error || "Failed to load models");
           setModels([]);
+          onModelsLoaded?.([]);
         }
       } catch (err) {
         console.error(err);
         setError("Failed to connect to Ollama server");
         setModels([]);
+        onModelsLoaded?.([]);
       } finally {
         setIsLoading(false);
         setIsRefreshing(false);
         onRefreshComplete?.();
       }
     },
-    [onRefreshComplete],
+    [onRefreshComplete, onModelsLoaded],
   );
 
   useEffect(() => {
