@@ -203,15 +203,15 @@ export default function OllamaSettings({
           />
         </div>
 
-        {/* <div className="border-t pt-6"> */}
-        {/*   <ModelList */}
-        {/*     refreshTrigger={modelRefreshTrigger} */}
-        {/*     onRefreshComplete={() => setModelRefreshTrigger(0)} */}
-        {/*     onModelsLoaded={(models) => */}
-        {/*       setInstalledModels(models.map((m) => m.name)) */}
-        {/*     } */}
-        {/*   /> */}
-        {/* </div> */}
+        <div className="border-t pt-6">
+          <ModelList
+            refreshTrigger={modelRefreshTrigger}
+            onRefreshComplete={() => setModelRefreshTrigger(0)}
+            onModelsLoaded={(models) =>
+              setInstalledModels(models.map((m) => m.name))
+            }
+          />
+        </div>
 
         <div className="text-xs text-muted-foreground border-t pt-4">
           <p className="font-medium">Default URL: http://localhost:11434/v1</p>
