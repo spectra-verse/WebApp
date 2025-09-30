@@ -1,7 +1,6 @@
 "use server";
 
 import { insertConversation } from "@/lib/db/conversations";
-import { coreUserMessageSchema } from "ai";
 // import { generateText } from "ai";
 import { randomUUID } from "crypto";
 import { redirect } from "next/navigation";
@@ -35,6 +34,6 @@ export async function createConversation(message: string, model: string) {
   const encodedMessage = Buffer.from(message).toString("base64");
 
   redirect(
-    `/conversations/${conversationId}?q=${encodedMessage}&model=${model}`
+    `/conversations/${conversationId}?q=${encodedMessage}&model=${model}`,
   );
 }

@@ -29,6 +29,7 @@ export default function DeleteModelDialog({
       await onConfirm(model.name);
       onClose();
     } catch (error) {
+      console.log(error);
       // Error handling will be done by parent component
     } finally {
       setIsDeleting(false);
@@ -90,11 +91,7 @@ export default function DeleteModelDialog({
         </div>
 
         <div className="flex gap-3 justify-end">
-          <Button
-            variant="outline"
-            onClick={onClose}
-            disabled={isDeleting}
-          >
+          <Button variant="outline" onClick={onClose} disabled={isDeleting}>
             Cancel
           </Button>
 
@@ -117,3 +114,4 @@ export default function DeleteModelDialog({
     </div>
   );
 }
+

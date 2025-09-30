@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { RefreshCw, Package, AlertCircle } from "lucide-react";
 import { OllamaModel } from "@/lib/ollama/client";
@@ -14,7 +14,10 @@ interface ModelListProps {
   onRefreshComplete?: () => void;
 }
 
-export default function ModelList({ refreshTrigger, onRefreshComplete }: ModelListProps) {
+export default function ModelList({
+  refreshTrigger,
+  onRefreshComplete,
+}: ModelListProps) {
   const [models, setModels] = useState<OllamaModel[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -24,42 +27,46 @@ export default function ModelList({ refreshTrigger, onRefreshComplete }: ModelLi
     model: OllamaModel | null;
   }>({ isOpen: false, model: null });
 
-  const loadModels = async (showRefreshLoader = false) => {
-    if (showRefreshLoader) {
-      setIsRefreshing(true);
-    } else {
-      setIsLoading(true);
-    }
-    setError(null);
-
-    try {
-      const result = await getOllamaModels();
-
-      if (result.success) {
-        setModels(result.models);
+  const loadModels = useCallback(
+    async (showRefreshLoader = false) => {
+      if (showRefreshLoader) {
+        setIsRefreshing(true);
       } else {
-        setError(result.error || "Failed to load models");
-        setModels([]);
+        setIsLoading(true);
       }
-    } catch (err) {
-      setError("Failed to connect to Ollama server");
-      setModels([]);
-    } finally {
-      setIsLoading(false);
-      setIsRefreshing(false);
-      onRefreshComplete?.();
-    }
-  };
+      setError(null);
+
+      try {
+        const result = await getOllamaModels();
+
+        if (result.success) {
+          setModels(result.models);
+        } else {
+          setError(result.error || "Failed to load models");
+          setModels([]);
+        }
+      } catch (err) {
+        console.error(err);
+        setError("Failed to connect to Ollama server");
+        setModels([]);
+      } finally {
+        setIsLoading(false);
+        setIsRefreshing(false);
+        onRefreshComplete?.();
+      }
+    },
+    [onRefreshComplete],
+  );
 
   useEffect(() => {
     loadModels();
-  }, []);
+  }, [loadModels]);
 
   useEffect(() => {
     if (refreshTrigger && refreshTrigger > 0) {
       loadModels(true);
     }
-  }, [refreshTrigger]);
+  }, [refreshTrigger, loadModels]);
 
   const handleRefresh = () => {
     loadModels(true);
@@ -71,11 +78,12 @@ export default function ModelList({ refreshTrigger, onRefreshComplete }: ModelLi
 
       if (result.success) {
         // Remove the model from the list
-        setModels(prev => prev.filter(model => model.name !== modelName));
+        setModels((prev) => prev.filter((model) => model.name !== modelName));
       } else {
         setError(result.error || "Failed to delete model");
       }
     } catch (err) {
+      console.error(err);
       setError("Failed to delete model");
     }
   };
@@ -132,7 +140,9 @@ export default function ModelList({ refreshTrigger, onRefreshComplete }: ModelLi
           onClick={handleRefresh}
           disabled={isRefreshing}
         >
-          <RefreshCw className={`w-4 h-4 mr-2 ${isRefreshing ? "animate-spin" : ""}`} />
+          <RefreshCw
+            className={`w-4 h-4 mr-2 ${isRefreshing ? "animate-spin" : ""}`}
+          />
           Refresh
         </Button>
       </div>
@@ -151,7 +161,8 @@ export default function ModelList({ refreshTrigger, onRefreshComplete }: ModelLi
             No models installed
           </h4>
           <p className="text-gray-600 dark:text-gray-400 mb-4">
-            No models found on your Ollama server. You can download models using the Ollama CLI.
+            No models found on your Ollama server. You can download models using
+            the Ollama CLI.
           </p>
           <div className="text-xs text-gray-500 dark:text-gray-500 font-mono bg-gray-100 dark:bg-gray-800 p-2 rounded">
             ollama pull llama3:8b
@@ -180,3 +191,4 @@ export default function ModelList({ refreshTrigger, onRefreshComplete }: ModelLi
     </div>
   );
 }
+

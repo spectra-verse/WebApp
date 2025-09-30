@@ -15,7 +15,9 @@ interface OllamaSettingsProps {
   initialSettings: UserSettings;
 }
 
-export default function OllamaSettings({ initialSettings }: OllamaSettingsProps) {
+export default function OllamaSettings({
+  initialSettings,
+}: OllamaSettingsProps) {
   const [ollamaUrl, setOllamaUrl] = useState(initialSettings.ollamaUrl);
   const [isSaving, setIsSaving] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
@@ -51,14 +53,17 @@ export default function OllamaSettings({ initialSettings }: OllamaSettingsProps)
       const result = await testOllamaConnection(ollamaUrl);
       setTestResult({
         success: result.success,
-        message: result.success ? result.message : result.error || "Connection failed",
+        message: result.success
+          ? result.message
+          : result.error || "Connection failed",
       });
 
       // Refresh models if connection is successful
       if (result.success) {
-        setModelRefreshTrigger(prev => prev + 1);
+        setModelRefreshTrigger((prev) => prev + 1);
       }
     } catch (error) {
+      console.error(error);
       setTestResult({
         success: false,
         message: "Failed to test connection",
@@ -81,8 +86,9 @@ export default function OllamaSettings({ initialSettings }: OllamaSettingsProps)
       setHasChanges(false);
 
       // Refresh models after saving new URL
-      setModelRefreshTrigger(prev => prev + 1);
+      setModelRefreshTrigger((prev) => prev + 1);
     } catch (error) {
+      console.error(error);
       setTestResult({
         success: false,
         message: "Failed to save settings",
@@ -118,7 +124,8 @@ export default function OllamaSettings({ initialSettings }: OllamaSettingsProps)
             className="font-mono"
           />
           <p className="text-xs text-muted-foreground">
-            Enter the URL of your Ollama server. Include the full URL with protocol (http/https).
+            Enter the URL of your Ollama server. Include the full URL with
+            protocol (http/https).
           </p>
         </div>
 
@@ -194,9 +201,12 @@ export default function OllamaSettings({ initialSettings }: OllamaSettingsProps)
 
         <div className="text-xs text-muted-foreground border-t pt-4">
           <p className="font-medium">Default URL: http://localhost:11434/v1</p>
-          <p>Make sure Ollama is running and accessible at the specified URL.</p>
+          <p>
+            Make sure Ollama is running and accessible at the specified URL.
+          </p>
         </div>
       </CardContent>
     </Card>
   );
 }
+

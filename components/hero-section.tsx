@@ -19,6 +19,7 @@ export default function HeroSection() {
           err instanceof Error ? err.message : "Unknown error"
         }`,
       );
+      throw new Error(error);
     } finally {
       setIsLoading(false);
     }
