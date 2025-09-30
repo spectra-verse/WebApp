@@ -2,8 +2,12 @@
 
 import { useSidebar } from "../providers/sidebar-provider";
 import ConversationLink from "./ConversationLink";
-
-export default function RecentChats({ conversations }) {
+import { Conversation } from "@/lib/db/types";
+export default function RecentChats({
+  conversations,
+}: {
+  conversations: Conversation[];
+}) {
   const { isCollapsed } = useSidebar();
 
   return (
@@ -14,7 +18,7 @@ export default function RecentChats({ conversations }) {
         </p>
       )}
       <div className="flex flex-col gap-2">
-        {conversations.map((c) => (
+        {conversations.map((c: Conversation) => (
           <ConversationLink key={c.id} conversation={c} />
         ))}
       </div>

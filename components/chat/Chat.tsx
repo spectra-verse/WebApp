@@ -97,7 +97,7 @@ export default function Chat({
 
           <div className="flex-1 overflow-y-auto mb-4" onScroll={handleScroll}>
             {messages.map((message) => (
-              <Message key={message.id} message={message} email={email} />
+              <Message key={message.id} message={message} email={email!} />
             ))}
             <div ref={messagesEndRef} />
           </div>

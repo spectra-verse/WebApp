@@ -54,7 +54,7 @@ export default function OllamaSettings({
       setTestResult({
         success: result.success,
         message: result.success
-          ? result.message
+          ? result.message!
           : result.error || "Connection failed",
       });
 

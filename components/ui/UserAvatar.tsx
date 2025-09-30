@@ -1,7 +1,15 @@
 import Image from "next/image";
 import { SHA256 } from "crypto-js";
 
-const UserAvatar = ({ email, size = 80, alt = "User Avatar" }) => {
+const UserAvatar = ({
+  email,
+  size = 80,
+  alt = "User Avatar",
+}: {
+  email: string;
+  size?: number;
+  alt?: string;
+}) => {
   // Gravatar requires the email to be trimmed and lowercased [1.2.3]
   const processedEmail = email.trim().toLowerCase();
 
