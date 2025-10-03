@@ -40,7 +40,6 @@ export default function ModelList({
 
       try {
         const result = await getOllamaModels();
-
         if (result.success) {
           setModels(result.models);
           onModelsLoaded?.(result.models);
@@ -60,7 +59,8 @@ export default function ModelList({
         onRefreshComplete?.();
       }
     },
-    [onRefreshComplete, onModelsLoaded],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
   );
 
   useEffect(() => {
@@ -196,4 +196,3 @@ export default function ModelList({
     </div>
   );
 }
-
