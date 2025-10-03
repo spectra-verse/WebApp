@@ -6,6 +6,7 @@ import {
   getConversation,
   getConversationMessages,
 } from "@/lib/db/conversations";
+import { getUserSettings } from "@/lib/actions/getUserSettings";
 import { Message } from "ai";
 
 interface ConversationPageProps {
@@ -20,6 +21,7 @@ export default async function ConversationPage({
   const { conversationId } = await params;
   const messages = getConversationMessages(conversationId);
   const conversation = getConversation(conversationId);
+  const settings = await getUserSettings();
 
   const messagesMapped: Message[] = messages.map((m) => ({
     id: m.id,
@@ -42,6 +44,7 @@ export default async function ConversationPage({
         initialModel={conversation?.model}
         showSidebar={true}
         email={user?.email}
+        ollamaUrl={settings.ollamaUrl}
       />
     </Suspense>
   );

@@ -14,12 +14,16 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { promptCards } from "@/lib/data/promptCards";
 
-export default function NewChat() {
+interface NewChatProps {
+  ollamaUrl: string;
+}
+
+export default function NewChat({ ollamaUrl }: NewChatProps) {
   const { isCollapsed } = useSidebar();
   const [input, setInput] = useState("");
   const [showAllCards, setShowAllCards] = useState(false);
   const { selectedModel, setSelectedModel, models, isLoading } =
-    useModelSelection();
+    useModelSelection(undefined, ollamaUrl);
 
   function handleInputChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,

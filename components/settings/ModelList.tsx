@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { RefreshCw, Package, AlertCircle } from "lucide-react";
 import { OllamaModel } from "@/lib/ollama/client";
-import { getOllamaModels } from "@/lib/actions/getOllamaModels";
+import { fetchClientOllamaModels } from "@/lib/ollama/clientOllama";
 import { deleteOllamaModel } from "@/lib/actions/deleteOllamaModel";
 import ModelCard from "./ModelCard";
 import DeleteModelDialog from "./DeleteModelDialog";
@@ -13,12 +13,14 @@ interface ModelListProps {
   refreshTrigger?: number;
   onRefreshComplete?: () => void;
   onModelsLoaded?: (models: OllamaModel[]) => void;
+  ollamaUrl: string;
 }
 
 export default function ModelList({
   refreshTrigger,
   onRefreshComplete,
   onModelsLoaded,
+  ollamaUrl,
 }: ModelListProps) {
   const [models, setModels] = useState<OllamaModel[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,15 +41,9 @@ export default function ModelList({
       setError(null);
 
       try {
-        const result = await getOllamaModels();
-        if (result.success) {
-          setModels(result.models);
-          onModelsLoaded?.(result.models);
-        } else {
-          setError(result.error || "Failed to load models");
-          setModels([]);
-          onModelsLoaded?.([]);
-        }
+        const fetchedModels = await fetchClientOllamaModels(ollamaUrl);
+        setModels(fetchedModels);
+        onModelsLoaded?.(fetchedModels);
       } catch (err) {
         console.error(err);
         setError("Failed to connect to Ollama server");
@@ -60,7 +56,7 @@ export default function ModelList({
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+    [ollamaUrl],
   );
 
   useEffect(() => {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchUserOllamaModels } from "@/lib/ollama/getUserOllamaClient";
+import { fetchClientOllamaModels } from "@/lib/ollama/clientOllama";
 import { OllamaModel } from "@/lib/ollama/client";
 
 export type FormattedModel = {
@@ -16,19 +16,26 @@ const fallbackModels = [
   { value: "gemma2", label: "Gemma 2" },
 ];
 
-export function useOllamaModels() {
+export function useOllamaModels(ollamaUrl?: string) {
   const [models, setModels] = useState<FormattedModel[]>(fallbackModels);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadModels() {
+      // If no ollamaUrl is provided, use fallback models
+      if (!ollamaUrl) {
+        setIsLoading(false);
+        console.log(`no url provided`);
+        return;
+      }
+
       setIsLoading(true);
       setError(null);
 
       try {
-        const ollamaModels = await fetchUserOllamaModels();
-
+        const ollamaModels = await fetchClientOllamaModels(ollamaUrl);
+        console.log("models ", ollamaModels);
         if (ollamaModels.length > 0) {
           const formattedModels = ollamaModels.map((model: OllamaModel) => ({
             value: model.name,
@@ -49,7 +56,7 @@ export function useOllamaModels() {
     }
 
     loadModels();
-  }, []);
+  }, [ollamaUrl]);
 
   return { models, isLoading, error };
 }

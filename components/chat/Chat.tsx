@@ -1,8 +1,8 @@
 "use client";
 import { useAutoScroll } from "@/hooks/useAutoScroll";
 import { Message as MessageType } from "ai";
-import { useChat } from "@ai-sdk/react";
-import { useEffect } from "react";
+import { useOllamaChat } from "@/hooks/useOllamaChat";
+import { useEffect, useRef } from "react";
 import ChatSubmit from "./ChatSubmit";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -17,6 +17,7 @@ interface ChatProps {
   initialModel?: string;
   showSidebar?: boolean;
   email?: string;
+  ollamaUrl: string;
 }
 
 export default function Chat({
@@ -25,25 +26,28 @@ export default function Chat({
   initialModel,
   showSidebar = false,
   email,
+  ollamaUrl,
 }: ChatProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
+  const processedQueryRef = useRef(false);
 
   const {
     selectedModel,
     setSelectedModel,
     models,
     isLoading: modelsLoading,
-  } = useModelSelection(initialModel);
+  } = useModelSelection(initialModel, ollamaUrl);
 
   const { messages, handleSubmit, input, handleInputChange, append, status } =
-    useChat({
+    useOllamaChat({
       body: {
         model: selectedModel,
         conversationId: conversationId,
       },
       initialMessages: initialMessages,
+      ollamaUrl,
     });
 
   const isLoading = status === "streaming";
@@ -52,9 +56,17 @@ export default function Chat({
     dependencies: messages,
   });
 
+  // Reset the processed flag when conversationId changes
+  useEffect(() => {
+    processedQueryRef.current = false;
+  }, [conversationId]);
+
   useEffect(() => {
     const q = searchParams.get("q");
-    if (q) {
+    // Only process if we haven't already processed this query for this conversation
+    if (q && !processedQueryRef.current) {
+      processedQueryRef.current = true;
+
       try {
         // Decode the base64 encoded message
         const decodedMessage = Buffer.from(q, "base64").toString();

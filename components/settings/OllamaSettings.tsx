@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, CheckCircle, XCircle, Settings } from "lucide-react";
 import { updateUserSettings } from "@/lib/actions/updateUserSettings";
-import { testOllamaConnection } from "@/lib/actions/testOllamaConnection";
+import { testClientOllamaConnection } from "@/lib/ollama/clientOllama";
 import { UserSettings } from "@/lib/db/types";
 import ModelList from "./ModelList";
 import ModelDownload from "./ModelDownload";
@@ -52,7 +52,7 @@ export default function OllamaSettings({
     setTestResult(null);
 
     try {
-      const result = await testOllamaConnection(ollamaUrl);
+      const result = await testClientOllamaConnection(ollamaUrl);
       setTestResult({
         success: result.success,
         message: result.success
@@ -135,6 +135,23 @@ export default function OllamaSettings({
           </p>
         </div>
 
+        <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4 space-y-2">
+          <h4 className="font-medium text-sm text-blue-900 dark:text-blue-100">
+            🔧 CORS Configuration Required
+          </h4>
+          <p className="text-xs text-blue-800 dark:text-blue-200">
+            For browser-based connections, Ollama needs CORS enabled. Set the
+            environment variable:
+          </p>
+          <code className="block bg-blue-100 dark:bg-blue-900 p-2 rounded text-xs font-mono text-blue-900 dark:text-blue-100">
+            OLLAMA_ORIGINS=*
+          </code>
+          <p className="text-xs text-blue-800 dark:text-blue-200">
+            Then restart Ollama. For production, replace * with your app&apos;s
+            domain (e.g., https://spectraverse.net).
+          </p>
+        </div>
+
         <div className="flex flex-col sm:flex-row gap-3">
           <Button
             variant="outline"
@@ -212,6 +229,7 @@ export default function OllamaSettings({
             refreshTrigger={modelRefreshTrigger}
             onRefreshComplete={() => setModelRefreshTrigger(0)}
             onModelsLoaded={handleModelsLoaded}
+            ollamaUrl={ollamaUrl}
           />
         </div>
 
