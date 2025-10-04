@@ -110,6 +110,31 @@ export async function fetchClientOllamaModels(baseUrl: string) {
 }
 
 /**
+ * Fetches detailed information about a specific model
+ * @param baseUrl - The base URL of the Ollama server
+ * @param modelName - The name of the model to get details for
+ */
+export async function fetchClientOllamaModelDetails(baseUrl: string, modelName: string) {
+  const cleanBaseUrl = baseUrl.replace(/\/v1\/?$/, "");
+  const url = `${cleanBaseUrl}/api/show`;
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ name: modelName }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch model details: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data;
+}
+
+/**
  * Tests connection to Ollama server
  * @param baseUrl - The base URL of the Ollama server
  */

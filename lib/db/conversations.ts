@@ -51,3 +51,16 @@ export function getAllConversations(userId: string) {
   );
   return stmt.all(userId) as Conversation[];
 }
+
+export function deleteAllUserConversations(userId: string) {
+  // Use transaction to ensure both deletes happen atomically
+  const deleteAllMessages = db.prepare("DELETE FROM messages WHERE userId = ?");
+  const deleteAllConversations = db.prepare("DELETE FROM conversations WHERE userId = ?");
+
+  const deleteAll = db.transaction((uid: string) => {
+    deleteAllMessages.run(uid);
+    deleteAllConversations.run(uid);
+  });
+
+  return deleteAll(userId);
+}

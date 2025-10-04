@@ -123,7 +123,13 @@ export default function Chat({
         </div>
 
         {/* Right Sidebar - Only show if showSidebar is true */}
-        {showSidebar && <ModelInfoSidebar className="hidden lg:block" />}
+        {showSidebar && (
+          <ModelInfoSidebar
+            className="hidden lg:block"
+            modelName={selectedModel}
+            ollamaUrl={ollamaUrl}
+          />
+        )}
       </div>
     </main>
   );
