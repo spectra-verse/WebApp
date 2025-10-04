@@ -4,6 +4,8 @@ import { insertConversation } from "@/lib/db/conversations";
 // import { generateText } from "ai";
 import { randomUUID } from "crypto";
 import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 // import { ollama } from "../ollama/client";
 
 async function generateConversationName(userMessage: string) {
@@ -21,11 +23,18 @@ async function generateConversationName(userMessage: string) {
 }
 
 export async function createConversation(message: string, model: string) {
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (!session?.user?.id) {
+    throw new Error("Unauthorized: You must be logged in to create a conversation");
+  }
+
   const conversationId = randomUUID();
   const conversationName = await generateConversationName(message);
 
   insertConversation({
     id: conversationId,
+    userId: session.user.id,
     name: conversationName,
     model: model,
   });

@@ -1,5 +1,6 @@
 export interface InsertConversationData {
   id: string;
+  userId: string;
   name?: string;
   model?: string;
 }
@@ -8,17 +9,20 @@ export interface Message {
   content: string;
   createdAt: string;
   conversationId: string;
+  userId: string;
   role: "assistant" | "user";
 }
 export interface MessageData {
   id: string;
   content: string;
   conversationId: string;
+  userId: string;
   role: string;
 }
 
 export interface Conversation {
   id: string;
+  userId: string;
   name: string;
   model?: string;
   createdAt: string;

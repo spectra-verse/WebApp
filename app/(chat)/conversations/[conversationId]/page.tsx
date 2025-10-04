@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { notFound, redirect } from "next/navigation";
 import Chat from "@/components/chat/Chat";
 import {
   getConversation,
@@ -18,9 +19,20 @@ export default async function ConversationPage({
 }: ConversationPageProps) {
   const session = await auth.api.getSession({ headers: await headers() });
   const user = session?.user;
+
+  if (!user?.id) {
+    redirect("/");
+  }
+
   const { conversationId } = await params;
-  const messages = getConversationMessages(conversationId);
-  const conversation = getConversation(conversationId);
+  const conversation = getConversation(conversationId, user.id);
+
+  // If conversation doesn't exist or user doesn't own it, show 404
+  if (!conversation) {
+    notFound();
+  }
+
+  const messages = getConversationMessages(conversationId, user.id);
   const settings = await getUserSettings();
 
   const messagesMapped: Message[] = messages.map((m) => ({
