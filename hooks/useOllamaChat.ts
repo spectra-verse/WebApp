@@ -2,6 +2,7 @@ import { useState, useCallback, FormEvent } from "react";
 import { Message } from "ai";
 import { streamOllamaChat, OllamaMessage } from "@/lib/ollama/clientOllama";
 import { saveConversationMessages } from "@/lib/actions/saveConversationMessages";
+import { generateUUID } from "@/lib/utils/uuid";
 
 interface UseOllamaChatOptions {
   initialMessages?: Message[];
@@ -32,7 +33,7 @@ export function useOllamaChat({
   const append = useCallback(
     async (message: { content: string; role: "user" | "assistant" }) => {
       const newUserMessage: Message = {
-        id: crypto.randomUUID(),
+        id: generateUUID(),
         role: message.role,
         content: message.content,
       };
@@ -45,7 +46,7 @@ export function useOllamaChat({
 
         try {
           // Create assistant message placeholder
-          const assistantMessageId = crypto.randomUUID();
+          const assistantMessageId = generateUUID();
           const assistantMessage: Message = {
             id: assistantMessageId,
             role: "assistant",
@@ -109,7 +110,7 @@ export function useOllamaChat({
           setMessages((prev) => [
             ...prev,
             {
-              id: crypto.randomUUID(),
+              id: generateUUID(),
               role: "assistant",
               content: `Error: ${errorMessage}`,
             },
