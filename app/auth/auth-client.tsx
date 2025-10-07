@@ -3,8 +3,10 @@
 import { signIn, signUp } from "@/lib/actions/auth-actions";
 import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function AuthClientPage() {
+  const router = useRouter();
   const [isSignIn, setIsSignIn] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -45,10 +47,16 @@ export default function AuthClientPage() {
         const result = await signIn(email, password);
         if (!result.user) {
           setError("Invalid email or password");
+        } else {
+          router.push("/chat");
         }
       } else {
         const result = await signUp(email, password, name);
-        if (!result.user) setError("Failed to create an account");
+        if (!result.user) {
+          setError("Failed to create an account");
+        } else {
+          router.push("/chat");
+        }
       }
     } catch (err) {
       setError(
