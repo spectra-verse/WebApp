@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Download, Loader2, Trash2 } from "lucide-react";
 import { deleteAllConversations } from "@/lib/actions/deleteAllConversations";
 import DeleteChatHistoryDialog from "./DeleteChatHistoryDialog";
+import * as XLSX from "xlsx";
 
 interface Conversation {
   id: string;
@@ -30,56 +31,41 @@ export default function DataExport() {
   const [isExporting, setIsExporting] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  const generateCSV = (conversations: Conversation[], messages: Message[]) => {
-    // CSV headers
-    const headers = ["type", "id", "name", "conversationId", "content", "role", "model", "createdAt"];
-    const rows = [headers.join(",")];
+  const generateExcel = (conversations: Conversation[], messages: Message[]) => {
+    // Create a new workbook
+    const workbook = XLSX.utils.book_new();
 
-    // Add conversation rows
-    conversations.forEach((conv) => {
-      const row = [
-        "conversation",
-        conv.id,
-        `"${conv.name.replace(/"/g, '""')}"`, // Escape quotes in name
-        "",
-        "",
-        "",
-        conv.model || "",
-        conv.createdAt,
-      ];
-      rows.push(row.join(","));
-    });
+    // Prepare conversations data
+    const conversationsData = conversations.map((conv) => ({
+      ID: conv.id,
+      Name: conv.name,
+      Model: conv.model || "",
+      "Created At": conv.createdAt,
+    }));
 
-    // Add message rows
-    messages.forEach((msg) => {
-      const row = [
-        "message",
-        msg.id,
-        "",
-        msg.conversationId,
-        `"${msg.content.replace(/"/g, '""')}"`, // Escape quotes in content
-        msg.role,
-        "",
-        msg.createdAt,
-      ];
-      rows.push(row.join(","));
-    });
+    // Prepare messages data
+    const messagesData = messages.map((msg) => ({
+      ID: msg.id,
+      "Conversation ID": msg.conversationId,
+      Role: msg.role,
+      Content: msg.content,
+      "Created At": msg.createdAt,
+    }));
 
-    return rows.join("\n");
+    // Create worksheets
+    const conversationsSheet = XLSX.utils.json_to_sheet(conversationsData);
+    const messagesSheet = XLSX.utils.json_to_sheet(messagesData);
+
+    // Add worksheets to workbook
+    XLSX.utils.book_append_sheet(workbook, conversationsSheet, "Conversations");
+    XLSX.utils.book_append_sheet(workbook, messagesSheet, "Messages");
+
+    return workbook;
   };
 
-  const downloadCSV = (csvContent: string, filename: string) => {
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-
-    link.setAttribute("href", url);
-    link.setAttribute("download", filename);
-    link.style.visibility = "hidden";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+  const downloadExcel = (workbook: XLSX.WorkBook, filename: string) => {
+    // Generate Excel file
+    XLSX.writeFile(workbook, filename);
   };
 
   const handleExport = async () => {
@@ -99,12 +85,12 @@ export default function DataExport() {
         throw new Error(data.error);
       }
 
-      // Generate CSV
-      const csvContent = generateCSV(data.conversations, data.messages);
+      // Generate Excel workbook
+      const workbook = generateExcel(data.conversations, data.messages);
 
-      // Download CSV
+      // Download Excel file
       const timestamp = new Date().toISOString().split("T")[0];
-      downloadCSV(csvContent, `user-data-${timestamp}.csv`);
+      downloadExcel(workbook, `user-data-${timestamp}.xlsx`);
 
     } catch (error) {
       console.error("Export failed:", error);
@@ -137,8 +123,9 @@ export default function DataExport() {
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Download all your data including conversations and messages in CSV
-            format. This will generate a CSV file containing all your information.
+            Download all your data including conversations and messages in Excel
+            format. This will generate an Excel file with separate sheets for
+            conversations and messages.
           </p>
 
           <Button
