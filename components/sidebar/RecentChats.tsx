@@ -13,7 +13,7 @@ export default function RecentChats({
   return (
     <div className="flex-1 overflow-y-auto p-4">
       {!isCollapsed && (
-        <p className="text-sm font-medium text-gray-500 mb-4 border-b border-b-gray-100 ">
+        <p className="text-sm font-medium text-sidebar-foreground/70 mb-4 border-b border-sidebar-border">
           Recents
         </p>
       )}

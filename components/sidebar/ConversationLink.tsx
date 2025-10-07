@@ -61,20 +61,20 @@ export default function ConversationLink({
         <Link
           key={conversation.id}
           className={cn(
-            "p-2 rounded-sm hover:bg-stone-300 transition-colors",
-            conversationId === conversation.id && "bg-slate-300",
+            "p-2 rounded-sm hover:bg-sidebar-accent transition-colors",
+            conversationId === conversation.id && "bg-sidebar-accent",
           )}
           href={`/conversations/${conversation.id}`}
           title={conversation.name}
         >
-          <MessageSquare className="w-4 h-4 text-slate-500" />
+          <MessageSquare className="w-4 h-4 text-sidebar-foreground" />
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="group relative flex items-center bg-stone-200 rounded-sm hover:bg-stone-300">
+    <div className="group relative flex items-center bg-sidebar-accent/50 rounded-sm hover:bg-sidebar-accent">
       {isEditing ? (
         <form onSubmit={handleRename} className="flex-1">
           <input
@@ -82,7 +82,7 @@ export default function ConversationLink({
             value={name}
             onChange={(e) => setName(e.target.value)}
             onBlur={handleRename}
-            className="w-full text-sm p-2 rounded-sm bg-slate-100 border border-slate-300"
+            className="w-full text-sm p-2 rounded-sm bg-sidebar text-sidebar-foreground border border-sidebar-border"
             autoFocus
           />
         </form>
@@ -90,8 +90,8 @@ export default function ConversationLink({
         <Link
           key={conversation.id}
           className={cn(
-            "truncate text-sm text-slate-500 p-2 rounded-sm flex-1",
-            conversationId === conversation.id && "bg-slate-200",
+            "truncate text-sm text-sidebar-foreground p-2 rounded-sm flex-1",
+            conversationId === conversation.id && "bg-sidebar-accent",
           )}
           href={`/conversations/${conversation.id}`}
         >
@@ -101,14 +101,14 @@ export default function ConversationLink({
       <div className="flex">
         <button
           onClick={startEditing}
-          className="invisible group-hover:visible p-2 text-slate-400 hover:text-blue-600"
+          className="invisible group-hover:visible p-2 text-sidebar-foreground/60 hover:text-sidebar-primary"
           aria-label="Rename conversation"
         >
           <Pencil size={16} />
         </button>
         <button
           onClick={handleDelete}
-          className="invisible group-hover:visible p-2 text-slate-400 hover:text-red-600"
+          className="invisible group-hover:visible p-2 text-sidebar-foreground/60 hover:text-red-600"
           aria-label="Delete conversation"
         >
           <Trash size={16} />

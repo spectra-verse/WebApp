@@ -9,18 +9,18 @@ export default function SidebarToggle() {
   return (
     <button
       onClick={toggle}
-      className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
+      className="p-2 hover:bg-sidebar-accent rounded-lg transition-colors"
       aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
     >
       {isCollapsed ? (
         <ArrowRightToLine
           size={20}
-          className="text-gray-600 dark:text-gray-300"
+          className="text-sidebar-foreground"
         />
       ) : (
         <ArrowLeftToLine
           size={20}
-          className="text-gray-600 dark:text-gray-300"
+          className="text-sidebar-foreground"
         />
       )}
     </button>

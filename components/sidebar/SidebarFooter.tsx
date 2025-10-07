@@ -17,7 +17,7 @@ export default function SidebarFooter({ user }: SidebarFooterProps) {
   const { isCollapsed } = useSidebar();
   if (isCollapsed) {
     return (
-      <div className="flex-shrink-0 p-4 bg-stone-100 dark:bg-gray-800">
+      <div className="flex-shrink-0 p-4 bg-sidebar">
         <div className="flex flex-col items-center gap-2">
           <SidebarToggle />
           <div className="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
@@ -26,10 +26,10 @@ export default function SidebarFooter({ user }: SidebarFooterProps) {
             )}
           </div>
           <button
-            className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
+            className="p-2 hover:bg-sidebar-accent rounded-lg transition-colors"
             title="Settings"
           >
-            <SettingsIcon className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+            <SettingsIcon className="w-4 h-4 text-sidebar-foreground" />
           </button>
         </div>
       </div>
@@ -37,7 +37,7 @@ export default function SidebarFooter({ user }: SidebarFooterProps) {
   }
 
   return (
-    <div className="flex-shrink-0 p-4 border-t bg-stone-100 dark:bg-gray-800">
+    <div className="flex-shrink-0 p-4 border-t bg-sidebar">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3 min-w-0">
           <div className="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
@@ -49,12 +49,12 @@ export default function SidebarFooter({ user }: SidebarFooterProps) {
               )
             )}
           </div>
-          <span className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+          <span className="text-sm font-medium text-sidebar-foreground truncate">
             {user?.name}
           </span>
         </div>
-        <button className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors">
-          <SettingsIcon className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+        <button className="p-2 hover:bg-sidebar-accent rounded-lg transition-colors">
+          <SettingsIcon className="w-4 h-4 text-sidebar-foreground" />
         </button>
       </div>
     </div>

@@ -8,7 +8,7 @@ export default function NewChatButton() {
 
   return (
     <Link
-      className="bg-violet-200 p-2 rounded text-sm flex gap-2 text-stone-800 mb-4 justify-start items-center hover:bg-violet-300 transition-colors"
+      className="bg-sidebar-primary p-2 rounded text-sm flex gap-2 text-sidebar-primary-foreground mb-4 justify-start items-center hover:bg-sidebar-primary/80 transition-colors"
       href="/chat"
       title={isCollapsed ? "Start a new conversation" : undefined}
     >

@@ -13,7 +13,7 @@ export default function SidebarContent({ children }: SidebarContentProps) {
   return (
     <aside
       className={`
-        bg-stone-100 border-r border-r-stone-200
+        bg-sidebar border-r border-sidebar-border
         flex flex-col h-full transition-all duration-300 ease-in-out
         ${isCollapsed ? "w-16" : "w-[320px]"}
       `}
