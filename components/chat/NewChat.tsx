@@ -1,11 +1,9 @@
 "use client";
 
 import { useModelSelection } from "@/hooks/useModelSelection";
-import {
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react";
-import { useState } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import ChatSubmit from "./ChatSubmit";
 import ModelSelector from "./ModelSelector";
 import PromptCard from "./PromptCard";
@@ -22,8 +20,25 @@ export default function NewChat({ ollamaUrl }: NewChatProps) {
   const { isCollapsed } = useSidebar();
   const [input, setInput] = useState("");
   const [showAllCards, setShowAllCards] = useState(false);
-  const { selectedModel, setSelectedModel, models, isLoading } =
-    useModelSelection(undefined, ollamaUrl);
+  const router = useRouter();
+  const {
+    selectedModel,
+    setSelectedModel,
+    models,
+    isLoading,
+    connectionError,
+  } = useModelSelection(undefined, ollamaUrl);
+
+  // Redirect to settings if Ollama is not accessible or no models installed
+  useEffect(() => {
+    if (!isLoading) {
+      if (connectionError) {
+        router.push("/settings?reason=no-connection");
+      } else if (models.length === 0) {
+        router.push("/settings?reason=no-models");
+      }
+    }
+  }, [isLoading, models, connectionError, router]);
 
   function handleInputChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -39,6 +54,17 @@ export default function NewChat({ ollamaUrl }: NewChatProps) {
     setShowAllCards(!showAllCards);
   }
 
+  // Show loading state while checking Ollama connection
+  if (isLoading || models.length < 1) {
+    return (
+      <main className="h-full flex items-center justify-center px-4 bg-background text-foreground">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-foreground mb-4"></div>
+          <p className="text-muted-foreground">Connecting to Ollama...</p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="h-full flex items-center justify-center px-4 bg-background text-foreground">

@@ -7,7 +7,7 @@ export function useModelSelection(initialModel?: string, ollamaUrl?: string) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
-  const { models, isLoading } = useOllamaModels(ollamaUrl);
+  const { models, isLoading, error, connectionError } = useOllamaModels(ollamaUrl);
   const conversationId = pathname?.split("/").pop();
   const lastSyncedModelRef = useRef<string | null>(null);
 
@@ -65,5 +65,7 @@ export function useModelSelection(initialModel?: string, ollamaUrl?: string) {
     setSelectedModel: handleModelChange,
     models,
     isLoading,
+    error,
+    connectionError,
   };
 }

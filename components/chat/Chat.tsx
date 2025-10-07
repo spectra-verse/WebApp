@@ -38,7 +38,19 @@ export default function Chat({
     setSelectedModel,
     models,
     isLoading: modelsLoading,
+    connectionError,
   } = useModelSelection(initialModel, ollamaUrl);
+
+  // Redirect to settings if Ollama is not accessible or no models installed
+  useEffect(() => {
+    if (!modelsLoading) {
+      if (connectionError) {
+        router.push("/settings?reason=no-connection");
+      } else if (models.length === 0) {
+        router.push("/settings?reason=no-models");
+      }
+    }
+  }, [modelsLoading, models, connectionError, router]);
 
   const { messages, handleSubmit, input, handleInputChange, append, status } =
     useOllamaChat({
@@ -94,6 +106,18 @@ export default function Chat({
   }, [searchParams, append, router, pathname]);
 
   // URL sync is now handled by the useModelSelection hook
+
+  // Show loading state while checking Ollama connection
+  if (modelsLoading) {
+    return (
+      <main className="bg-background w-full h-full flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-foreground mb-4"></div>
+          <p className="text-muted-foreground">Connecting to Ollama...</p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="bg-background w-full h-full">

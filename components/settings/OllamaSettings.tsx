@@ -140,11 +140,36 @@ export default function OllamaSettings({
             🔧 CORS Configuration Required
           </h4>
           <p className="text-xs text-blue-800 dark:text-blue-200">
-            For browser-based connections, Ollama needs CORS enabled. Set the
-            environment variable:
+            For browser-based connections, Ollama needs CORS enabled (Easiest
+            option is run ollama as docker container). Set the environment
+            variable: <strong>OLLAMA_ORIGINS=*</strong>
           </p>
           <code className="block bg-blue-100 dark:bg-blue-900 p-2 rounded text-xs font-mono text-blue-900 dark:text-blue-100">
-            OLLAMA_ORIGINS=*
+            <strong>Docker:</strong>
+            <br />
+            <span className="text-xs text-gray-600">
+              docker run -d -v ollama:/root/.ollama -p 11434:11434 -e
+              OLLAMA_ORIGINS=&quot;*&quot; --name ollama
+            </span>
+            ollama/ollama
+          </code>
+
+          <code className="block bg-blue-100 dark:bg-blue-900 p-2 rounded text-xs font-mono text-blue-900 dark:text-blue-100">
+            <strong>
+              Mac OS / Linux: Set the OLLAMA_ORIGINS environment variable
+            </strong>
+            <br />
+            <span className="text-xs text-gray-600 mt-4">
+              export OLLAMA_ORIGINS=&quot;*&quot;
+            </span>
+          </code>
+
+          <code className="block bg-blue-100 dark:bg-blue-900 p-2 rounded text-xs font-mono text-blue-900 dark:text-blue-100">
+            <strong>For Windows (using PowerShell):</strong>
+            <br />
+            <span className="text-xs text-gray-600">
+              $env:OLLAMA_ORIGINS=&quot;*&quot;
+            </span>
           </code>
           <p className="text-xs text-blue-800 dark:text-blue-200">
             Then restart Ollama. For production, replace * with your app&apos;s

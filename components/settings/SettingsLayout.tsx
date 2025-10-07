@@ -1,3 +1,5 @@
+import SettingsAlert from "./SettingsAlert";
+
 interface SettingsLayoutProps {
   children: React.ReactNode;
 }
@@ -12,6 +14,8 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
             Manage your account settings and preferences.
           </p>
         </div>
+
+        <SettingsAlert />
 
         <div className="space-y-6">
           {children}

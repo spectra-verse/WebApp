@@ -7,31 +7,26 @@ export type FormattedModel = {
   label: string;
 };
 
-// Fallback models to use if fetching from Ollama fails
-const fallbackModels = [
-  { value: "llama3.2", label: "Llama 3.2" },
-  { value: "phi4", label: "Phi-4" },
-  { value: "deepseek-r1:8b", label: "DeepSeek 8B" },
-  { value: "deepseek-r1:1.5b", label: "DeepSeek 1.5B" },
-  { value: "gemma2", label: "Gemma 2" },
-];
-
 export function useOllamaModels(ollamaUrl?: string) {
-  const [models, setModels] = useState<FormattedModel[]>(fallbackModels);
+  const [models, setModels] = useState<FormattedModel[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [connectionError, setConnectionError] = useState(false);
 
   useEffect(() => {
     async function loadModels() {
-      // If no ollamaUrl is provided, use fallback models
+      // If no ollamaUrl is provided, mark as error
       if (!ollamaUrl) {
         setIsLoading(false);
-        console.log(`no url provided`);
+        setConnectionError(true);
+        setError("No Ollama URL configured");
+        console.log("No Ollama URL provided");
         return;
       }
 
       setIsLoading(true);
       setError(null);
+      setConnectionError(false);
 
       try {
         const ollamaModels = await fetchClientOllamaModels(ollamaUrl);
@@ -43,13 +38,16 @@ export function useOllamaModels(ollamaUrl?: string) {
           }));
           setModels(formattedModels);
         } else {
-          // If no models returned from Ollama, keep using fallback models
-          console.log("No models found from Ollama, using fallback models");
+          // No models installed
+          setModels([]);
+          setError("No models installed in Ollama");
+          console.log("No models found in Ollama");
         }
       } catch (err) {
-        setError("Failed to load models from Ollama");
+        setConnectionError(true);
+        setError("Failed to connect to Ollama");
         console.error(err);
-        // Keep the fallback models in case of error
+        setModels([]);
       } finally {
         setIsLoading(false);
       }
@@ -58,7 +56,7 @@ export function useOllamaModels(ollamaUrl?: string) {
     loadModels();
   }, [ollamaUrl]);
 
-  return { models, isLoading, error };
+  return { models, isLoading, error, connectionError };
 }
 
 // Helper to format model names into more readable labels
