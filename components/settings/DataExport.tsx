@@ -53,8 +53,9 @@ export default function DataExport() {
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Download all your data including conversations, messages, and settings.
-            This will generate a SQLite database file containing all your information.
+            Download all your data including conversations, messages, and
+            settings. This will generate a SQLite database file containing all
+            your information.
           </p>
 
           <Button
@@ -75,13 +76,10 @@ export default function DataExport() {
             )}
           </Button>
 
-          <p className="text-xs text-muted-foreground">
-            Note: This feature is currently in development. The download functionality will be available soon.
-          </p>
-
           <div className="pt-4 border-t">
             <p className="text-sm text-muted-foreground mb-3">
-              Permanently delete all your chat history, including all conversations and messages.
+              Permanently delete all your chat history, including all
+              conversations and messages.
             </p>
             <Button
               variant="destructive"
@@ -103,3 +101,4 @@ export default function DataExport() {
     </>
   );
 }
+

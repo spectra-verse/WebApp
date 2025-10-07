@@ -1,5 +1,6 @@
 "use client";
 import { MD5 } from "crypto-js";
+import Image from "next/image";
 
 const UserAvatar = ({
   email,
@@ -20,12 +21,12 @@ const UserAvatar = ({
   const gravatarUrl = `https://www.gravatar.com/avatar/${hash}?s=${size}&d=mp`;
 
   return (
-    <img
+    <Image
       src={gravatarUrl}
       width={size}
       height={size}
       alt={alt}
-      style={{ borderRadius: "50%" }}
+      className="rounded-full"
     />
   );
 };

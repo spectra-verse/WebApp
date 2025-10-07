@@ -5,6 +5,7 @@ import { useSidebar } from "@/components/providers/sidebar-provider";
 import { User } from "lucide-react";
 import SidebarToggle from "./SidebarToggle";
 import UserAvatar from "../ui/UserAvatar";
+import Link from "next/link";
 
 interface SidebarFooterProps {
   user?: {
@@ -53,9 +54,12 @@ export default function SidebarFooter({ user }: SidebarFooterProps) {
             {user?.name}
           </span>
         </div>
-        <button className="p-2 hover:bg-sidebar-accent rounded-lg transition-colors">
+        <Link
+          href="/settings"
+          className="p-2 hover:bg-sidebar-accent rounded-lg transition-colors"
+        >
           <SettingsIcon className="w-4 h-4 text-sidebar-foreground" />
-        </button>
+        </Link>
       </div>
     </div>
   );
