@@ -19,6 +19,7 @@ const UserAvatar = ({
 
   // Construct the Gravatar URL [1.1.2, 1.2.1]
   const gravatarUrl = `https://www.gravatar.com/avatar/${hash}?s=${size}&d=mp`;
+  console.log(gravatarUrl);
 
   return (
     <Image
