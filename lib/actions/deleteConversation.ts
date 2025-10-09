@@ -12,7 +12,7 @@ export async function deleteConversation(conversationId: string) {
   }
 
   try {
-    return dbDeleteConversation(conversationId, session.user.id);
+    return await dbDeleteConversation(conversationId, session.user.id);
   } catch (error) {
     console.error("Failed to delete conversation:", error);
     throw new Error("Failed to delete conversation");

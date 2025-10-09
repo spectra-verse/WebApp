@@ -22,14 +22,14 @@ export async function POST(req: Request) {
   }
 
   // Verify user owns this conversation
-  const conversation = getConversation(conversationId, userId);
+  const conversation = await getConversation(conversationId, userId);
   if (!conversation) {
     return new Response("Conversation not found or unauthorized", { status: 404 });
   }
 
   // Ensure the conversation has the most recent model saved
   try {
-    updateConversationModel(conversationId, userId, model);
+    await updateConversationModel(conversationId, userId, model);
   } catch (error) {
     console.error("Failed to update conversation model:", error);
     // Continue processing the message even if model update fails
@@ -78,5 +78,5 @@ async function saveMessages(
     },
   ];
 
-  insertConversationMessages(messages);
+  await insertConversationMessages(messages);
 }

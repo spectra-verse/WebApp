@@ -25,14 +25,14 @@ export default async function ConversationPage({
   }
 
   const { conversationId } = await params;
-  const conversation = getConversation(conversationId, user.id);
+  const conversation = await getConversation(conversationId, user.id);
 
   // If conversation doesn't exist or user doesn't own it, show 404
   if (!conversation) {
     notFound();
   }
 
-  const messages = getConversationMessages(conversationId, user.id);
+  const messages = await getConversationMessages(conversationId, user.id);
   const settings = await getUserSettings();
 
   const messagesMapped: Message[] = messages.map((m) => ({

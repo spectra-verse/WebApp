@@ -15,7 +15,7 @@ export async function renameConversation(
   }
 
   try {
-    updateConversationName(conversationId, session.user.id, newName);
+    await updateConversationName(conversationId, session.user.id, newName);
     return { success: true };
   } catch (error) {
     console.error("Failed to rename conversation:", error);

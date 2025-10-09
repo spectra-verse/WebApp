@@ -32,7 +32,7 @@ export async function createConversation(message: string, model: string) {
   const conversationId = randomUUID();
   const conversationName = await generateConversationName(message);
 
-  insertConversation({
+  await insertConversation({
     id: conversationId,
     userId: session.user.id,
     name: conversationName,

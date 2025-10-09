@@ -12,7 +12,7 @@ import RecentChats from "./RecentChats";
 export default async function Sidebar() {
   const session = await auth.api.getSession({ headers: await headers() });
   const user = session?.user;
-  const conversations = user?.id ? getAllConversations(user.id) : [];
+  const conversations = user?.id ? await getAllConversations(user.id) : [];
   return (
     <SidebarContent>
       {/* Fixed Header */}

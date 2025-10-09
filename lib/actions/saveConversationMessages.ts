@@ -25,7 +25,7 @@ export async function saveConversationMessages(
   const userId = session.user.id;
 
   // Verify user owns this conversation
-  const conversation = getConversation(conversationId, userId);
+  const conversation = await getConversation(conversationId, userId);
   if (!conversation) {
     throw new Error("Conversation not found or unauthorized");
   }

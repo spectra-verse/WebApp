@@ -1,66 +1,91 @@
-import { db } from "./init";
+import { db } from "@/db";
+import { conversations, messages } from "@/db/schema";
 import { Conversation, InsertConversationData, Message } from "./types";
+import { eq, and, desc } from "drizzle-orm";
 
-export function insertConversation(conversationData: InsertConversationData) {
-  const stmt = db.prepare(
-    "INSERT INTO conversations (id, userId, name, model) VALUES (?, ?, ?, ?)"
-  );
-  return stmt.run(
-    conversationData.id,
-    conversationData.userId,
-    conversationData.name ?? "",
-    conversationData.model ?? null
-  );
-}
-
-export function updateConversationModel(conversationId: string, userId: string, model: string) {
-  const stmt = db.prepare("UPDATE conversations SET model = ? WHERE id = ? AND userId = ?");
-  return stmt.run(model, conversationId, userId);
-}
-
-export function deleteConversation(conversationId: string, userId: string) {
-  const stmt = db.prepare("DELETE FROM conversations WHERE id = ? AND userId = ?");
-  return stmt.run(conversationId, userId);
-}
-
-export function getConversation(conversationId: string, userId: string) {
-  const stmt = db.prepare("SELECT * FROM conversations WHERE id = ? AND userId = ?");
-  return stmt.get(conversationId, userId) as Conversation | undefined;
-}
-
-export function getConversationMessages(conversationId: string, userId: string) {
-  const stmt = db.prepare(
-    `SELECT
-      m.*
-    FROM conversations as c
-    JOIN messages as m on m.conversationId = c.id
-    WHERE c.id = ? AND c.userId = ?
-    ORDER BY m.createdAt ASC`
-  );
-  return stmt.all(conversationId, userId) as Message[];
-}
-
-export function updateConversationName(conversationId: string, userId: string, name: string) {
-  const stmt = db.prepare("UPDATE conversations SET name = ? WHERE id = ? AND userId = ?");
-  return stmt.run(name, conversationId, userId);
-}
-
-export function getAllConversations(userId: string) {
-  const stmt = db.prepare(
-    "SELECT * FROM conversations WHERE userId = ? ORDER BY createdAt DESC"
-  );
-  return stmt.all(userId) as Conversation[];
-}
-
-export function deleteAllUserConversations(userId: string) {
-  // Use transaction to ensure both deletes happen atomically
-  const deleteAllMessages = db.prepare("DELETE FROM messages WHERE userId = ?");
-  const deleteAllConversations = db.prepare("DELETE FROM conversations WHERE userId = ?");
-
-  const deleteAll = db.transaction((uid: string) => {
-    deleteAllMessages.run(uid);
-    deleteAllConversations.run(uid);
+export async function insertConversation(conversationData: InsertConversationData) {
+  return await db.insert(conversations).values({
+    id: conversationData.id,
+    userId: conversationData.userId,
+    name: conversationData.name ?? "",
+    model: conversationData.model ?? null,
   });
+}
 
-  return deleteAll(userId);
+export async function updateConversationModel(conversationId: string, userId: string, model: string) {
+  return await db
+    .update(conversations)
+    .set({ model })
+    .where(and(eq(conversations.id, conversationId), eq(conversations.userId, userId)));
+}
+
+export async function deleteConversation(conversationId: string, userId: string) {
+  return await db
+    .delete(conversations)
+    .where(and(eq(conversations.id, conversationId), eq(conversations.userId, userId)));
+}
+
+export async function getConversation(conversationId: string, userId: string) {
+  const result = await db
+    .select()
+    .from(conversations)
+    .where(and(eq(conversations.id, conversationId), eq(conversations.userId, userId)))
+    .limit(1);
+
+  if (!result[0]) return undefined;
+
+  return {
+    ...result[0],
+    createdAt: result[0].createdAt.toISOString(),
+  } as Conversation;
+}
+
+export async function getConversationMessages(conversationId: string, userId: string) {
+  const result = await db
+    .select({
+      id: messages.id,
+      content: messages.content,
+      role: messages.role,
+      conversationId: messages.conversationId,
+      userId: messages.userId,
+      createdAt: messages.createdAt,
+    })
+    .from(conversations)
+    .innerJoin(messages, eq(messages.conversationId, conversations.id))
+    .where(and(eq(conversations.id, conversationId), eq(conversations.userId, userId)))
+    .orderBy(messages.createdAt);
+
+  return result.map(msg => ({
+    ...msg,
+    createdAt: msg.createdAt.toISOString(),
+  })) as Message[];
+}
+
+export async function updateConversationName(conversationId: string, userId: string, name: string) {
+  return await db
+    .update(conversations)
+    .set({ name })
+    .where(and(eq(conversations.id, conversationId), eq(conversations.userId, userId)));
+}
+
+export async function getAllConversations(userId: string) {
+  const result = await db
+    .select()
+    .from(conversations)
+    .where(eq(conversations.userId, userId))
+    .orderBy(desc(conversations.createdAt));
+
+  return result.map(conv => ({
+    ...conv,
+    createdAt: conv.createdAt.toISOString(),
+  })) as Conversation[];
+}
+
+export async function deleteAllUserConversations(userId: string) {
+  // Drizzle will handle cascade deletes based on schema
+  // First delete all messages (explicit)
+  await db.delete(messages).where(eq(messages.userId, userId));
+
+  // Then delete all conversations
+  return await db.delete(conversations).where(eq(conversations.userId, userId));
 }

@@ -1,14 +1,15 @@
-import { db } from "./init";
+import { db } from "@/db";
+import { messages } from "@/db/schema";
 import { MessageData } from "./types";
 
-export function insertConversationMessages(messages: MessageData[]) {
-  const stmt = db.prepare(
-    "INSERT INTO messages (id, content, conversationId, userId, role) VALUES (?, ?, ?, ?, ?)"
+export async function insertConversationMessages(messageData: MessageData[]) {
+  return await db.insert(messages).values(
+    messageData.map((msg) => ({
+      id: msg.id,
+      content: msg.content,
+      conversationId: msg.conversationId,
+      userId: msg.userId,
+      role: msg.role,
+    }))
   );
-
-  const insertMessages = db.transaction((msgs: MessageData[]) => {
-    for (const msg of msgs)
-      stmt.run(msg.id, msg.content, msg.conversationId, msg.userId, msg.role);
-  });
-  return insertMessages(messages);
 }

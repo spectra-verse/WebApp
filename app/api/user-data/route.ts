@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { getAllConversations } from "@/lib/db/conversations";
-import { db } from "@/lib/db/init";
-import { Message } from "@/lib/db/types";
+import { db } from "@/db";
+import { messages } from "@/db/schema";
+import { eq, asc } from "drizzle-orm";
 
 export async function GET() {
   try {
@@ -19,17 +20,24 @@ export async function GET() {
     const userId = session.user.id;
 
     // Fetch all conversations for this user
-    const conversations = getAllConversations(userId);
+    const conversations = await getAllConversations(userId);
 
     // Fetch all messages for this user
-    const stmt = db.prepare(
-      "SELECT * FROM messages WHERE userId = ? ORDER BY createdAt ASC"
-    );
-    const messages = stmt.all(userId) as Message[];
+    const userMessages = await db
+      .select()
+      .from(messages)
+      .where(eq(messages.userId, userId))
+      .orderBy(asc(messages.createdAt));
+
+    // Convert timestamps to ISO strings
+    const messagesFormatted = userMessages.map(msg => ({
+      ...msg,
+      createdAt: msg.createdAt.toISOString(),
+    }));
 
     return NextResponse.json({
       conversations,
-      messages,
+      messages: messagesFormatted,
     });
   } catch (error) {
     console.error("Failed to fetch user data:", error);
