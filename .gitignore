@@ -45,3 +45,5 @@ CLAUDE.md
 *.db
 *.db-shm
 *.db-wal
+backlog.md
+spectraverse-assistant.md
