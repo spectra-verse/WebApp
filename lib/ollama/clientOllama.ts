@@ -26,18 +26,40 @@ export interface OllamaChatResponse {
 
 /**
  * Calls Ollama chat API with streaming support
+ * Automatically detects and routes through local proxy if enabled
  * @param baseUrl - The base URL of the Ollama server (e.g., http://localhost:11434)
  * @param request - The chat request payload
  * @param onChunk - Callback for each streaming chunk
+ * @param conversationId - Optional conversation ID for proxy mode
  */
 export async function streamOllamaChat(
   baseUrl: string,
   request: OllamaChatRequest,
-  onChunk: (content: string, done: boolean) => void
+  onChunk: (content: string, done: boolean) => void,
+  conversationId?: string,
 ): Promise<void> {
+  // Check if using local proxy mode
+  const useLocalProxy = process.env.NEXT_PUBLIC_USE_LOCAL_PROXY === "true";
+  const proxyUrl = process.env.NEXT_PUBLIC_PROXY_URL || "http://localhost:8080";
+
+  // Debug logging
+  console.log("[streamOllamaChat] useLocalProxy:", useLocalProxy);
+  console.log("[streamOllamaChat] conversationId:", conversationId);
+  console.log("[streamOllamaChat] proxyUrl:", proxyUrl);
+
+  if (useLocalProxy && conversationId) {
+    console.log("[streamOllamaChat] Using proxy mode");
+    // Use local proxy with OpenAI-compatible SSE streaming
+    return await streamViaProxy(proxyUrl, request, onChunk, conversationId);
+  }
+
+  console.log("[streamOllamaChat] Using direct Ollama mode");
+
+  // Direct Ollama connection (original behavior)
   // Remove /v1 suffix if present and use Ollama's native API
   const cleanBaseUrl = baseUrl.replace(/\/v1\/?$/, "");
   const url = `${cleanBaseUrl}/api/chat`;
+  console.log(url);
 
   const response = await fetch(url, {
     method: "POST",
@@ -51,7 +73,9 @@ export async function streamOllamaChat(
   });
 
   if (!response.ok) {
-    throw new Error(`Ollama request failed: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `Ollama request failed: ${response.status} ${response.statusText}`,
+    );
   }
 
   const reader = response.body?.getReader();
@@ -92,6 +116,89 @@ export async function streamOllamaChat(
 }
 
 /**
+ * Stream chat via local proxy (Server-Sent Events format)
+ */
+async function streamViaProxy(
+  proxyUrl: string,
+  request: OllamaChatRequest,
+  onChunk: (content: string, done: boolean) => void,
+  conversationId: string,
+): Promise<void> {
+  const url = `${proxyUrl}/api/ollama/chat`;
+
+  const requestBody = {
+    model: request.model,
+    messages: request.messages,
+    conversationId,
+  };
+
+  console.log("[streamViaProxy] Fetching URL:", url);
+  console.log("[streamViaProxy] Request body:", JSON.stringify(requestBody, null, 2));
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestBody),
+  });
+
+  console.log("[streamViaProxy] Response status:", response.status);
+  console.log("[streamViaProxy] Response ok:", response.ok);
+
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => "Unable to read error");
+    console.error("[streamViaProxy] Error response:", errorText);
+    throw new Error(
+      `Proxy request failed: ${response.status} ${response.statusText}`,
+    );
+  }
+
+  const reader = response.body?.getReader();
+  if (!reader) {
+    throw new Error("Response body is not readable");
+  }
+
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+
+      if (done) break;
+
+      // Decode the chunk and add to buffer
+      buffer += decoder.decode(value, { stream: true });
+
+      // Process complete SSE lines
+      const lines = buffer.split("\n");
+      buffer = lines.pop() || ""; // Keep incomplete line in buffer
+
+      for (const line of lines) {
+        if (line.startsWith("data: ")) {
+          const data = line.slice(6); // Remove "data: " prefix
+
+          try {
+            const event = JSON.parse(data);
+
+            if (event.type === "text-delta" && event.textDelta) {
+              onChunk(event.textDelta, false);
+            } else if (event.type === "finish") {
+              onChunk("", true);
+            }
+          } catch (e) {
+            console.error("Failed to parse SSE data:", e, data);
+          }
+        }
+      }
+    }
+  } finally {
+    reader.releaseLock();
+  }
+}
+
+/**
  * Fetches available models from Ollama
  * @param baseUrl - The base URL of the Ollama server
  */
@@ -114,7 +221,10 @@ export async function fetchClientOllamaModels(baseUrl: string) {
  * @param baseUrl - The base URL of the Ollama server
  * @param modelName - The name of the model to get details for
  */
-export async function fetchClientOllamaModelDetails(baseUrl: string, modelName: string) {
+export async function fetchClientOllamaModelDetails(
+  baseUrl: string,
+  modelName: string,
+) {
   const cleanBaseUrl = baseUrl.replace(/\/v1\/?$/, "");
   const url = `${cleanBaseUrl}/api/show`;
 
@@ -164,10 +274,14 @@ export async function testClientOllamaConnection(baseUrl: string): Promise<{
       message: `Connected successfully! Found ${modelCount} model(s)`,
     };
   } catch (error) {
-    if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
+    if (
+      error instanceof TypeError &&
+      error.message.includes("Failed to fetch")
+    ) {
       return {
         success: false,
-        error: "Cannot connect to Ollama. Check if:\n1. Ollama is running\n2. URL is correct\n3. CORS is enabled",
+        error:
+          "Cannot connect to Ollama. Check if:\n1. Ollama is running\n2. URL is correct\n3. CORS is enabled",
       };
     }
 

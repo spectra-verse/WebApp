@@ -32,12 +32,43 @@ export async function createConversation(message: string, model: string) {
   const conversationId = randomUUID();
   const conversationName = await generateConversationName(message);
 
-  await insertConversation({
-    id: conversationId,
-    userId: session.user.id,
-    name: conversationName,
-    model: model,
-  });
+  // Check if using local proxy mode
+  const useLocalProxy = process.env.NEXT_PUBLIC_USE_LOCAL_PROXY === "true";
+  const proxyUrl = process.env.NEXT_PUBLIC_PROXY_URL || "http://localhost:8080";
+  const localUserId = process.env.NEXT_PUBLIC_LOCAL_USER_ID || "local-user";
+
+  if (useLocalProxy) {
+    // Create conversation via proxy API
+    try {
+      const response = await fetch(`${proxyUrl}/api/conversations`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: conversationId,
+          name: conversationName,
+          model: model,
+          userId: localUserId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to create conversation: ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Failed to create conversation via proxy:", error);
+      throw error;
+    }
+  } else {
+    // Cloud mode: use PostgreSQL
+    await insertConversation({
+      id: conversationId,
+      userId: session.user.id,
+      name: conversationName,
+      model: model,
+    });
+  }
 
   // Base64 encode the message parameter
   const encodedMessage = Buffer.from(message).toString("base64");

@@ -86,8 +86,10 @@ export function useOllamaChat({
                 )
               );
 
-              // Save messages when streaming is done
-              if (done && body.conversationId) {
+              // Save messages when streaming is done (only for cloud mode)
+              // In local proxy mode, messages are saved by the proxy automatically
+              const useLocalProxy = process.env.NEXT_PUBLIC_USE_LOCAL_PROXY === "true";
+              if (done && body.conversationId && !useLocalProxy) {
                 saveConversationMessages(
                   message.content,
                   fullContent,
@@ -96,7 +98,8 @@ export function useOllamaChat({
                   console.error("Failed to save messages:", err);
                 });
               }
-            }
+            },
+            body.conversationId // Pass conversationId for proxy mode
           );
         } catch (err) {
           console.error("Chat error:", err);
