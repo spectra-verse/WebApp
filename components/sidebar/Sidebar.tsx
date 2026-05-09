@@ -11,30 +11,32 @@ import RecentChats from "./RecentChats";
 import { Conversation } from "@/lib/db/types";
 
 async function getConversations(userId: string): Promise<Conversation[]> {
-  const useLocalProxy = process.env.NEXT_PUBLIC_USE_LOCAL_PROXY === "true";
+  const useLocalProxy = process.env.NEXT_PUBLIC_USE_LOCAL_PROXY;
   const proxyUrl = process.env.NEXT_PUBLIC_PROXY_URL || "http://localhost:8080";
   const localUserId = process.env.NEXT_PUBLIC_LOCAL_USER_ID || "local-user";
+  console.log(useLocalProxy);
 
-  if (useLocalProxy) {
-    // Fetch from local proxy
-    try {
-      const response = await fetch(
-        `${proxyUrl}/api/conversations?userId=${localUserId}`,
-        { cache: "no-store" }
-      );
-      if (!response.ok) {
-        console.error("Failed to fetch conversations from proxy");
-        return [];
-      }
-      return response.json();
-    } catch (error) {
-      console.error("Error fetching conversations from proxy:", error);
-      return [];
-    }
-  } else {
-    // Cloud mode: use PostgreSQL
-    return getAllConversations(userId);
-  }
+  return getAllConversations(userId);
+  // if (useLocalProxy) {
+  //   // Fetch from local proxy
+  //   try {
+  //     const response = await fetch(
+  //       `${proxyUrl}/api/conversations?userId=${localUserId}`,
+  //       { cache: "no-store" },
+  //     );
+  //     if (!response.ok) {
+  //       console.error("Failed to fetch conversations from proxy");
+  //       return [];
+  //     }
+  //     return response.json();
+  //   } catch (error) {
+  //     console.error("Error fetching conversations from proxy:", error);
+  //     return [];
+  //   }
+  // } else {
+  //   // Cloud mode: use PostgreSQL
+  //   return getAllConversations(userId);
+  // }
 }
 
 export default async function Sidebar() {
