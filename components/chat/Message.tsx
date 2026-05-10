@@ -34,7 +34,7 @@ export default function Message({
     <Card className="whitespace-pre-wrap">
       <CardHeader>
         <div className="flex items-center gap-2">
-          <UserAvatar email={email} size={30} />
+          {/* <UserAvatar email={email} size={30} /> */}
           {content}
         </div>
       </CardHeader>

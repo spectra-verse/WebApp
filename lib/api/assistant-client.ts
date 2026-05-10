@@ -17,7 +17,7 @@ const LOCAL_USER_ID = process.env.NEXT_PUBLIC_LOCAL_USER_ID || "local-user";
  */
 async function fetchFromProxy<T>(
   endpoint: string,
-  options?: RequestInit
+  options?: RequestInit,
 ): Promise<T> {
   const url = `${PROXY_URL}${endpoint}`;
 
@@ -30,8 +30,12 @@ async function fetchFromProxy<T>(
   });
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ error: "Unknown error" }));
-    throw new Error(error.error || `HTTP ${response.status}: ${response.statusText}`);
+    const error = await response
+      .json()
+      .catch(() => ({ error: "Unknown error" }));
+    throw new Error(
+      error.error || `HTTP ${response.status}: ${response.statusText}`,
+    );
   }
 
   // Handle 204 No Content
@@ -75,7 +79,7 @@ export const AssistantAPI = {
 
       const effectiveUserId = userId || LOCAL_USER_ID;
       return fetchFromProxy<Conversation[]>(
-        `/api/conversations?userId=${effectiveUserId}`
+        `/api/conversations?userId=${effectiveUserId}`,
       );
     },
 
@@ -87,7 +91,9 @@ export const AssistantAPI = {
         throw new Error("Cloud mode not yet migrated to use this client");
       }
 
-      return fetchFromProxy<Conversation>(`/api/conversations/${conversationId}`);
+      return fetchFromProxy<Conversation>(
+        `/api/conversations/${conversationId}`,
+      );
     },
 
     /**
@@ -95,16 +101,19 @@ export const AssistantAPI = {
      */
     async update(
       conversationId: string,
-      updates: { name?: string; model?: string }
+      updates: { name?: string; model?: string },
     ): Promise<Conversation> {
       if (!USE_LOCAL_PROXY) {
         throw new Error("Cloud mode not yet migrated to use this client");
       }
 
-      return fetchFromProxy<Conversation>(`/api/conversations/${conversationId}`, {
-        method: "PATCH",
-        body: JSON.stringify(updates),
-      });
+      return fetchFromProxy<Conversation>(
+        `/api/conversations/${conversationId}`,
+        {
+          method: "PATCH",
+          body: JSON.stringify(updates),
+        },
+      );
     },
 
     /**
@@ -129,7 +138,7 @@ export const AssistantAPI = {
       }
 
       return fetchFromProxy<Message[]>(
-        `/api/conversations/${conversationId}/messages`
+        `/api/conversations/${conversationId}/messages`,
       );
     },
   },
@@ -160,25 +169,35 @@ export const AssistantAPI = {
     /**
      * Get available Ollama models
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async getModels(): Promise<{ object: string; data: any[] }> {
       if (!USE_LOCAL_PROXY) {
         throw new Error("Cloud mode not yet migrated to use this client");
       }
 
-      return fetchFromProxy<{ object: string; data: any[] }>("/api/ollama/models");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return fetchFromProxy<{ object: string; data: any[] }>(
+        "/api/ollama/models",
+      );
     },
 
     /**
      * Check Ollama health/connectivity
      */
-    async checkHealth(): Promise<{ ollama_connected: boolean; ollama_url?: string; error?: string }> {
+    async checkHealth(): Promise<{
+      ollama_connected: boolean;
+      ollama_url?: string;
+      error?: string;
+    }> {
       if (!USE_LOCAL_PROXY) {
         throw new Error("Cloud mode not yet migrated to use this client");
       }
 
-      return fetchFromProxy<{ ollama_connected: boolean; ollama_url?: string; error?: string }>(
-        "/api/ollama/health"
-      );
+      return fetchFromProxy<{
+        ollama_connected: boolean;
+        ollama_url?: string;
+        error?: string;
+      }>("/api/ollama/health");
     },
   },
 

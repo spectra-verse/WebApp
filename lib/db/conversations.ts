@@ -4,11 +4,14 @@ import { Conversation, InsertConversationData, Message } from "./types";
 import { eq, and, desc } from "drizzle-orm";
 
 export async function insertConversation(conversationData: InsertConversationData) {
+  const now = new Date();
   return await db.insert(conversations).values({
     id: conversationData.id,
     userId: conversationData.userId,
     name: conversationData.name ?? "",
     model: conversationData.model ?? null,
+    createdAt: now,
+    updatedAt: now,
   });
 }
 

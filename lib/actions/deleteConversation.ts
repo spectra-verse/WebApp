@@ -1,18 +1,13 @@
 "use server";
 
 import { deleteConversation as dbDeleteConversation } from "@/lib/db/conversations";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { getLocalUserId } from "@/lib/local-user";
 
 export async function deleteConversation(conversationId: string) {
-  const session = await auth.api.getSession({ headers: await headers() });
-
-  if (!session?.user?.id) {
-    throw new Error("Unauthorized: You must be logged in");
-  }
+  const userId = await getLocalUserId();
 
   try {
-    return await dbDeleteConversation(conversationId, session.user.id);
+    return await dbDeleteConversation(conversationId, userId);
   } catch (error) {
     console.error("Failed to delete conversation:", error);
     throw new Error("Failed to delete conversation");

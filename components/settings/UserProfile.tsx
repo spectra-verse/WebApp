@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import UserAvatar from "@/components/ui/UserAvatar";
+// import UserAvatar from "@/components/ui/UserAvatar";
 
 interface UserProfileProps {
   user: {
@@ -20,11 +20,11 @@ export default function UserProfile({ user }: UserProfileProps) {
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex items-center space-x-4">
-          <UserAvatar
-            email={user.email}
-            size={80}
-            alt={user.name}
-          />
+          {/* <UserAvatar */}
+          {/*   email={user.email} */}
+          {/*   size={80} */}
+          {/*   alt={user.name} */}
+          {/* /> */}
           <div className="space-y-1">
             <h3 className="text-xl font-semibold">{user.name}</h3>
             <p className="text-sm text-muted-foreground">{user.email}</p>
@@ -37,10 +37,10 @@ export default function UserProfile({ user }: UserProfileProps) {
               Member since
             </label>
             <p className="text-sm">
-              {new Date(user.createdAt).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
+              {new Date(user.createdAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
               })}
             </p>
           </div>
@@ -50,10 +50,10 @@ export default function UserProfile({ user }: UserProfileProps) {
               Last updated
             </label>
             <p className="text-sm">
-              {new Date(user.updatedAt).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
+              {new Date(user.updatedAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
               })}
             </p>
           </div>
@@ -62,3 +62,4 @@ export default function UserProfile({ user }: UserProfileProps) {
     </Card>
   );
 }
+

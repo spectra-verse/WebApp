@@ -1,18 +1,13 @@
 "use server";
 
 import { updateConversationModel } from "@/lib/db/conversations";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { getLocalUserId } from "@/lib/local-user";
 
 export async function updateModel(conversationId: string, model: string) {
-  const session = await auth.api.getSession({ headers: await headers() });
-
-  if (!session?.user?.id) {
-    throw new Error("Unauthorized: You must be logged in");
-  }
+  const userId = await getLocalUserId();
 
   try {
-    return updateConversationModel(conversationId, session.user.id, model);
+    return updateConversationModel(conversationId, userId, model);
   } catch (error) {
     console.error("Failed to update conversation model:", error);
     throw new Error("Failed to update model");

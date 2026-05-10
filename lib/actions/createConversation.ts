@@ -1,79 +1,27 @@
 "use server";
 
 import { insertConversation } from "@/lib/db/conversations";
-// import { generateText } from "ai";
 import { randomUUID } from "crypto";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-// import { ollama } from "../ollama/client";
+import { getLocalUserId } from "@/lib/local-user";
 
 async function generateConversationName(userMessage: string) {
   return `${userMessage.substring(0, 15)}...`;
-  // we need a fast model for this
-  // const model = "llama3.2";
-  // const nameResult = await generateText({
-  //   model: ollama(model),
-  //   prompt: `You are an assistant that interacts with a ai chat applications, your job is to assign a short title/name to conversations, based on the user question
-  //    The title should be in from perspective of the user asking the question, return only the title, in plain text without ""
-  //    User Question : ${userMessage}
-  //   `,
-  // });
-  // return nameResult.text;
 }
 
 export async function createConversation(message: string, model: string) {
-  const session = await auth.api.getSession({ headers: await headers() });
-
-  if (!session?.user?.id) {
-    throw new Error("Unauthorized: You must be logged in to create a conversation");
-  }
+  const userId = await getLocalUserId();
 
   const conversationId = randomUUID();
   const conversationName = await generateConversationName(message);
 
-  // Check if using local proxy mode
-  const useLocalProxy = process.env.NEXT_PUBLIC_USE_LOCAL_PROXY === "true";
-  const proxyUrl = process.env.NEXT_PUBLIC_PROXY_URL || "http://localhost:8080";
-  const localUserId = process.env.NEXT_PUBLIC_LOCAL_USER_ID || "local-user";
+  await insertConversation({
+    id: conversationId,
+    userId,
+    name: conversationName,
+    model,
+  });
 
-  if (useLocalProxy) {
-    // Create conversation via proxy API
-    try {
-      const response = await fetch(`${proxyUrl}/api/conversations`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: conversationId,
-          name: conversationName,
-          model: model,
-          userId: localUserId,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to create conversation: ${response.status}`);
-      }
-    } catch (error) {
-      console.error("Failed to create conversation via proxy:", error);
-      throw error;
-    }
-  } else {
-    // Cloud mode: use PostgreSQL
-    await insertConversation({
-      id: conversationId,
-      userId: session.user.id,
-      name: conversationName,
-      model: model,
-    });
-  }
-
-  // Base64 encode the message parameter
   const encodedMessage = Buffer.from(message).toString("base64");
-
-  redirect(
-    `/conversations/${conversationId}?q=${encodedMessage}&model=${model}`,
-  );
+  redirect(`/conversations/${conversationId}?q=${encodedMessage}&model=${model}`);
 }

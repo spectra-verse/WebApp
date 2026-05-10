@@ -1,21 +1,13 @@
 "use server";
 
 import { updateConversationName } from "../db/conversations";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { getLocalUserId } from "@/lib/local-user";
 
-export async function renameConversation(
-  conversationId: string,
-  newName: string
-) {
-  const session = await auth.api.getSession({ headers: await headers() });
-
-  if (!session?.user?.id) {
-    throw new Error("Unauthorized: You must be logged in");
-  }
+export async function renameConversation(conversationId: string, newName: string) {
+  const userId = await getLocalUserId();
 
   try {
-    await updateConversationName(conversationId, session.user.id, newName);
+    await updateConversationName(conversationId, userId, newName);
     return { success: true };
   } catch (error) {
     console.error("Failed to rename conversation:", error);

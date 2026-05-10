@@ -3,6 +3,7 @@ import { messages } from "@/db/schema";
 import { MessageData } from "./types";
 
 export async function insertConversationMessages(messageData: MessageData[]) {
+  const now = new Date();
   return await db.insert(messages).values(
     messageData.map((msg) => ({
       id: msg.id,
@@ -10,6 +11,7 @@ export async function insertConversationMessages(messageData: MessageData[]) {
       conversationId: msg.conversationId,
       userId: msg.userId,
       role: msg.role,
+      createdAt: now,
     }))
   );
 }

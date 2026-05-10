@@ -1,18 +1,13 @@
 "use server";
 
 import { deleteAllUserConversations } from "@/lib/db/conversations";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { getLocalUserId } from "@/lib/local-user";
 
 export async function deleteAllConversations() {
-  const session = await auth.api.getSession({ headers: await headers() });
-
-  if (!session?.user?.id) {
-    throw new Error("Unauthorized: You must be logged in");
-  }
+  const userId = await getLocalUserId();
 
   try {
-    deleteAllUserConversations(session.user.id);
+    deleteAllUserConversations(userId);
     return { success: true, message: "All chat history deleted successfully" };
   } catch (error) {
     console.error("Failed to delete all conversations:", error);
