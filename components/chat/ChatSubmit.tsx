@@ -5,6 +5,7 @@ import { createConversation } from "@/lib/actions/createConversation";
 import { ChatRequestOptions } from "ai";
 import { Loader, SendHorizontal, Paperclip, ImageDown } from "lucide-react";
 import { useRef, useTransition } from "react";
+import { useRouter } from "next/navigation";
 
 interface ChatSubmitProps {
   handleInputChange?: (
@@ -32,6 +33,7 @@ export default function ChatSubmit({
 }: ChatSubmitProps) {
   const [pending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
+  const router = useRouter();
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -48,8 +50,11 @@ export default function ChatSubmit({
     }
 
     if (isNewChat && selectedModel) {
-      startTransition(() => {
-        createConversation(input, selectedModel);
+      startTransition(async () => {
+        const result = await createConversation(input, selectedModel);
+        router.push(
+          `/conversations/${result.conversationId}?q=${result.encodedMessage}&model=${result.model}`
+        );
       });
     } else if (handleSubmit) {
       handleSubmit(e);

@@ -1,19 +1,19 @@
-"use server";
-
 import { insertConversation } from "@/lib/db/conversations";
-import { randomUUID } from "crypto";
-import { redirect } from "next/navigation";
-import { getLocalUserId } from "@/lib/local-user";
+import { generateUUID } from "@/lib/utils/uuid";
+import { getClientUserId } from "@/lib/client-local-user";
 
-async function generateConversationName(userMessage: string) {
+function generateConversationName(userMessage: string) {
   return `${userMessage.substring(0, 15)}...`;
 }
 
-export async function createConversation(message: string, model: string) {
-  const userId = await getLocalUserId();
+export async function createConversation(
+  message: string,
+  model: string
+): Promise<{ conversationId: string; encodedMessage: string; model: string }> {
+  const userId = await getClientUserId();
 
-  const conversationId = randomUUID();
-  const conversationName = await generateConversationName(message);
+  const conversationId = generateUUID();
+  const conversationName = generateConversationName(message);
 
   await insertConversation({
     id: conversationId,
@@ -23,5 +23,5 @@ export async function createConversation(message: string, model: string) {
   });
 
   const encodedMessage = Buffer.from(message).toString("base64");
-  redirect(`/conversations/${conversationId}?q=${encodedMessage}&model=${model}`);
+  return { conversationId, encodedMessage, model };
 }

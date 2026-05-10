@@ -1,17 +1,15 @@
-"use server";
-
 import { insertConversationMessages } from "@/lib/db/messages";
 import { getConversation } from "@/lib/db/conversations";
 import { MessageData } from "@/lib/db/types";
-import { randomUUID } from "crypto";
-import { getLocalUserId } from "@/lib/local-user";
+import { generateUUID } from "@/lib/utils/uuid";
+import { getClientUserId } from "@/lib/client-local-user";
 
 export async function saveConversationMessages(
   userMessageContent: string,
   assistantMessageContent: string,
   conversationId: string
 ) {
-  const userId = await getLocalUserId();
+  const userId = await getClientUserId();
 
   const conversation = await getConversation(conversationId, userId);
   if (!conversation) {
@@ -24,13 +22,13 @@ export async function saveConversationMessages(
       role: "user",
       conversationId,
       userId,
-      id: randomUUID(),
+      id: generateUUID(),
     },
     {
       content: assistantMessageContent,
       conversationId,
       userId,
-      id: randomUUID(),
+      id: generateUUID(),
       role: "assistant",
     },
   ];

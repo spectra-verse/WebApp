@@ -1,15 +1,13 @@
-"use server";
-
-import { db } from "@/db";
+import { getClientDb } from "@/lib/client-db";
 import { userSettings } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { randomUUID } from "crypto";
-import { getLocalUserId } from "@/lib/local-user";
+import { generateUUID } from "@/lib/utils/uuid";
+import { getClientUserId } from "@/lib/client-local-user";
 
 export async function getUserSettings() {
-  const userId = await getLocalUserId();
+  const userId = await getClientUserId();
 
-  const settings = await db
+  const settings = await getClientDb()
     .select()
     .from(userSettings)
     .where(eq(userSettings.userId, userId))
@@ -17,14 +15,23 @@ export async function getUserSettings() {
 
   if (settings.length === 0) {
     const newSettings = {
-      id: randomUUID(),
+      id: generateUUID(),
       userId,
       ollamaUrl: "http://localhost:11434/v1",
       createdAt: new Date(),
       updatedAt: new Date(),
     };
 
-    await db.insert(userSettings).values(newSettings);
+    try {
+      await getClientDb().insert(userSettings).values(newSettings);
+    } catch {
+      const existing = await getClientDb()
+        .select()
+        .from(userSettings)
+        .where(eq(userSettings.userId, userId))
+        .limit(1);
+      if (existing.length > 0) return existing[0];
+    }
     return newSettings;
   }
 

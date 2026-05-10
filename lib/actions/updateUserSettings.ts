@@ -1,15 +1,13 @@
-"use server";
-
-import { db } from "@/db";
+import { getClientDb } from "@/lib/client-db";
 import { userSettings } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { getLocalUserId } from "@/lib/local-user";
+import { getClientUserId } from "@/lib/client-local-user";
 
 export async function updateUserSettings(ollamaUrl: string) {
-  const userId = await getLocalUserId();
+  const userId = await getClientUserId();
 
   try {
-    await db
+    await getClientDb()
       .update(userSettings)
       .set({ ollamaUrl, updatedAt: new Date() })
       .where(eq(userSettings.userId, userId));

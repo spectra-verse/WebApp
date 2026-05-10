@@ -14,7 +14,7 @@ export interface ModelDetails {
     quantization_level?: string;
   };
   model_info?: {
-    [key: string]: any;
+    [key: string]: unknown;
   };
 }
 

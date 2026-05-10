@@ -1,10 +1,8 @@
-"use server";
-
 import { updateConversationModel } from "@/lib/db/conversations";
-import { getLocalUserId } from "@/lib/local-user";
+import { getClientUserId } from "@/lib/client-local-user";
 
 export async function updateModel(conversationId: string, model: string) {
-  const userId = await getLocalUserId();
+  const userId = await getClientUserId();
 
   try {
     return updateConversationModel(conversationId, userId, model);

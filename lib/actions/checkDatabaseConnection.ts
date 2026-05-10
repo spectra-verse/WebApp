@@ -1,6 +1,4 @@
-"use server";
-
-import { db } from "@/db";
+import { getClientDb } from "@/lib/client-db";
 import { user } from "@/db/schema";
 
 export async function checkDatabaseConnection(): Promise<{
@@ -8,7 +6,7 @@ export async function checkDatabaseConnection(): Promise<{
   message: string;
 }> {
   try {
-    await db.select({ id: user.id }).from(user).limit(1);
+    await getClientDb().select({ id: user.id }).from(user).limit(1);
     return { success: true, message: "Database connected successfully" };
   } catch (error) {
     return {

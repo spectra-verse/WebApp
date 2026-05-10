@@ -1,11 +1,11 @@
-import { db } from "@/db";
+import { getClientDb } from "@/lib/client-db";
 import { conversations, messages } from "@/db/schema";
 import { Conversation, InsertConversationData, Message } from "./types";
 import { eq, and, desc } from "drizzle-orm";
 
 export async function insertConversation(conversationData: InsertConversationData) {
   const now = new Date();
-  return await db.insert(conversations).values({
+  return await getClientDb().insert(conversations).values({
     id: conversationData.id,
     userId: conversationData.userId,
     name: conversationData.name ?? "",
@@ -16,20 +16,20 @@ export async function insertConversation(conversationData: InsertConversationDat
 }
 
 export async function updateConversationModel(conversationId: string, userId: string, model: string) {
-  return await db
+  return await getClientDb()
     .update(conversations)
     .set({ model })
     .where(and(eq(conversations.id, conversationId), eq(conversations.userId, userId)));
 }
 
 export async function deleteConversation(conversationId: string, userId: string) {
-  return await db
+  return await getClientDb()
     .delete(conversations)
     .where(and(eq(conversations.id, conversationId), eq(conversations.userId, userId)));
 }
 
 export async function getConversation(conversationId: string, userId: string) {
-  const result = await db
+  const result = await getClientDb()
     .select()
     .from(conversations)
     .where(and(eq(conversations.id, conversationId), eq(conversations.userId, userId)))
@@ -44,7 +44,7 @@ export async function getConversation(conversationId: string, userId: string) {
 }
 
 export async function getConversationMessages(conversationId: string, userId: string) {
-  const result = await db
+  const result = await getClientDb()
     .select({
       id: messages.id,
       content: messages.content,
@@ -65,14 +65,14 @@ export async function getConversationMessages(conversationId: string, userId: st
 }
 
 export async function updateConversationName(conversationId: string, userId: string, name: string) {
-  return await db
+  return await getClientDb()
     .update(conversations)
     .set({ name })
     .where(and(eq(conversations.id, conversationId), eq(conversations.userId, userId)));
 }
 
 export async function getAllConversations(userId: string) {
-  const result = await db
+  const result = await getClientDb()
     .select()
     .from(conversations)
     .where(eq(conversations.userId, userId))
@@ -85,10 +85,6 @@ export async function getAllConversations(userId: string) {
 }
 
 export async function deleteAllUserConversations(userId: string) {
-  // Drizzle will handle cascade deletes based on schema
-  // First delete all messages (explicit)
-  await db.delete(messages).where(eq(messages.userId, userId));
-
-  // Then delete all conversations
-  return await db.delete(conversations).where(eq(conversations.userId, userId));
+  await getClientDb().delete(messages).where(eq(messages.userId, userId));
+  return await getClientDb().delete(conversations).where(eq(conversations.userId, userId));
 }

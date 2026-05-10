@@ -1,5 +1,10 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { getAllConversations } from "@/lib/db/conversations";
-import { getLocalUserId } from "@/lib/local-user";
+import { getClientUserId } from "@/lib/client-local-user";
+import { Conversation } from "@/lib/db/types";
 import NewChatButton from "./NewChatButton";
 import SidebarContent from "./SidebarContent";
 import SidebarFooter from "./SidebarFooter";
@@ -8,9 +13,18 @@ import Link from "next/link";
 import Logo from "@/components/ui/Logo";
 import RecentChats from "./RecentChats";
 
-export default async function Sidebar() {
-  const userId = await getLocalUserId();
-  const conversations = await getAllConversations(userId);
+export default function Sidebar() {
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    async function loadConversations() {
+      const userId = await getClientUserId();
+      const convs = await getAllConversations(userId);
+      setConversations(convs);
+    }
+    loadConversations();
+  }, [pathname]);
 
   return (
     <SidebarContent>

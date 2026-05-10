@@ -1,14 +1,12 @@
-"use server";
-
-import { db } from "@/db";
+import { getClientDb } from "@/lib/client-db";
 import { user } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { getLocalUserId } from "@/lib/local-user";
+import { getClientUserId } from "@/lib/client-local-user";
 
 export async function getUserData() {
-  const userId = await getLocalUserId();
+  const userId = await getClientUserId();
 
-  const userData = await db
+  const userData = await getClientDb()
     .select({
       id: user.id,
       name: user.name,

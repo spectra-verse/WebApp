@@ -1,10 +1,8 @@
-"use server";
-
 import { updateConversationName } from "../db/conversations";
-import { getLocalUserId } from "@/lib/local-user";
+import { getClientUserId } from "@/lib/client-local-user";
 
 export async function renameConversation(conversationId: string, newName: string) {
-  const userId = await getLocalUserId();
+  const userId = await getClientUserId();
 
   try {
     await updateConversationName(conversationId, userId, newName);

@@ -1,10 +1,8 @@
-"use server";
-
 import { deleteConversation as dbDeleteConversation } from "@/lib/db/conversations";
-import { getLocalUserId } from "@/lib/local-user";
+import { getClientUserId } from "@/lib/client-local-user";
 
 export async function deleteConversation(conversationId: string) {
-  const userId = await getLocalUserId();
+  const userId = await getClientUserId();
 
   try {
     return await dbDeleteConversation(conversationId, userId);

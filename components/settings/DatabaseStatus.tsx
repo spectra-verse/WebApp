@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Loader2, CheckCircle, XCircle, Database } from "lucide-react";
 import { checkDatabaseConnection } from "@/lib/actions/checkDatabaseConnection";
 
-const dbUrl = process.env.NEXT_PUBLIC_LIBSQL_URL ?? "http://localhost:8080";
+import { getLibSQLUrl } from "@/lib/client-db";
 
 export default function DatabaseStatus() {
   const [isTesting, setIsTesting] = useState(false);
+  const [dbUrl, setDbUrl] = useState("http://localhost:8080");
   const [testResult, setTestResult] = useState<{
     success: boolean;
     message: string;
@@ -29,6 +30,7 @@ export default function DatabaseStatus() {
   };
 
   useEffect(() => {
+    setDbUrl(getLibSQLUrl());
     handleTestConnection();
   }, []);
 

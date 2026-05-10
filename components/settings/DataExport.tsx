@@ -8,6 +8,11 @@ import { Download, Loader2, Trash2 } from "lucide-react";
 import { deleteAllConversations } from "@/lib/actions/deleteAllConversations";
 import DeleteChatHistoryDialog from "./DeleteChatHistoryDialog";
 import * as XLSX from "xlsx";
+import { getAllConversations } from "@/lib/db/conversations";
+import { getClientDb } from "@/lib/client-db";
+import { getClientUserId } from "@/lib/client-local-user";
+import { messages as messagesTable } from "@/db/schema";
+import { eq, asc } from "drizzle-orm";
 
 interface Conversation {
   id: string;
@@ -72,26 +77,26 @@ export default function DataExport() {
     try {
       setIsExporting(true);
 
-      // Fetch user data from API
-      const response = await fetch("/api/user-data");
+      const userId = await getClientUserId();
+      const db = getClientDb();
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch user data");
-      }
+      const [conversations, userMessages] = await Promise.all([
+        getAllConversations(userId),
+        db
+          .select()
+          .from(messagesTable)
+          .where(eq(messagesTable.userId, userId))
+          .orderBy(asc(messagesTable.createdAt)),
+      ]);
 
-      const data = await response.json();
+      const messagesFormatted = userMessages.map((msg) => ({
+        ...msg,
+        createdAt: msg.createdAt.toISOString(),
+      }));
 
-      if (data.error) {
-        throw new Error(data.error);
-      }
-
-      // Generate Excel workbook
-      const workbook = generateExcel(data.conversations, data.messages);
-
-      // Download Excel file
+      const workbook = generateExcel(conversations, messagesFormatted);
       const timestamp = new Date().toISOString().split("T")[0];
       downloadExcel(workbook, `user-data-${timestamp}.xlsx`);
-
     } catch (error) {
       console.error("Export failed:", error);
       alert("Export failed. Please try again.");

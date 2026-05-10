@@ -2,14 +2,10 @@ import { Card, CardHeader } from "@/components/ui/card";
 import { Message as MessageType } from "ai";
 import { Bot } from "lucide-react";
 import MdRender from "./MdRender";
-import UserAvatar from "../ui/UserAvatar";
-
 export default function Message({
   message,
-  email,
 }: {
   message: MessageType;
-  email: string;
 }) {
   const { role, content } = message;
   if (role === "assistant") {
