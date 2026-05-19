@@ -1,4 +1,4 @@
-# Spectraverse
+Spectraverse
 
 > Privacy-first AI chat application with local LLM processing
 
@@ -56,8 +56,9 @@ Spectraverse is a modern web application that allows users to interact with AI m
 
 ### Database & ORM
 
+- **sqld / LibSQL** - Local database server running in Docker on `localhost:8080`
+- **@libsql/client** - Client-side LibSQL driver (web variant)
 - **Drizzle ORM 0.44** - Type-safe database operations
-- **SQLite** - local storage (ollama-next.db)
 
 ### AI Integration
 
@@ -87,6 +88,7 @@ Spectraverse is a modern web application that allows users to interact with AI m
 
 ### Database & ORM
 
+- **@libsql/client** - Client-side driver for sqld/LibSQL (web variant, connects to `localhost:8080`)
 - **drizzle-orm** (^0.44.5) - Type-safe ORM with excellent TypeScript support
 - **drizzle-kit** (^0.31.4) - Database migration and schema management CLI
 
@@ -134,7 +136,7 @@ Spectraverse is a modern web application that allows users to interact with AI m
 Before running this project, ensure you have:
 
 - **Node.js** (v18 or higher recommended)
-- **Ollama** - [Install Ollama](https://ollama.com/) and ensure it's running on `localhost:11434`
+- **Docker** - [Install Docker Desktop](https://www.docker.com/products/docker-desktop/) — used to run Ollama and the local database
 
 ## Installation & Setup
 
@@ -142,66 +144,24 @@ Before running this project, ensure you have:
 
 ```bash
 git clone <repository-url>
-cd WebApp
+cd spectraverse
 npm install
 ```
 
-### 2. Environment Variables
+### 2. Run the Setup Script
 
-Create a `.env.local` file in the root directory:
-
-```env
-# Database
-DATABASE_URL="postgresql://user:password@host/database"
-```
-
-### 3. Database Setup
-
-Run migrations to set up your database schema:
+The setup script installs and starts both Ollama and the local database (sqld) in Docker, runs schema migrations, and lets you choose which AI models to download:
 
 ```bash
-# Using Drizzle Kit
-npm run db:push
-
-# Or manually run migrations
-npm run sql:migrate
+bash scripts/spectraverse-install.sh
 ```
 
-This will create the necessary tables:
+This sets up:
+- **Ollama** container on `localhost:11434` with CORS enabled
+- **sqld** (LibSQL) container on `localhost:8080` with the full database schema
+- Your chosen Ollama models
 
-- `user`,
-- `conversations`, `messages` (chat data)
-- `userSettings` (Ollama configuration)
-
-### 4. Ollama Setup
-
-Install and start Ollama:
-
-```bash
-# Install Ollama from https://ollama.com/
-
-# Start Ollama (it runs on localhost:11434 by default)
-ollama serve
-
-# Pull a model (e.g., llama3.2)
-ollama pull llama3.2
-```
-
-**CORS Configuration:**
-
-For browser-based Ollama access, set the CORS origin:
-
-```bash
-# Linux/Mac
-export OLLAMA_ORIGINS="http://localhost:3000"
-
-# Windows (PowerShell)
-$env:OLLAMA_ORIGINS="http://localhost:3000"
-```
-
-Or configure in Ollama settings (instructions provided in the app's Settings page).
-
-### 5. Start Development Server
+### 3. Start Development Server
 
 ```bash
 npm run dev
@@ -223,11 +183,6 @@ npm start
 
 # Run linter
 npm run lint
-
-# Database operations
-npm run db:migrate    # Run Drizzle migrations
-npm run db:push       # Push schema changes to database
-npm run sql:migrate   # Run manual SQL migrations
 ```
 
 ## Project Structure
@@ -239,7 +194,7 @@ spectraverse/
 │   │   ├── chat/            # New chat page
 │   │   ├── conversations/   # Existing conversations
 │   │   └── settings/        # User settings
-│   ├── api/                 # API routes (Better-Auth, Ollama)
+│   ├── api/                 # API routes
 │   └── page.tsx             # Landing page
 ├── components/              # React components
 │   ├── chat/               # Chat interface components
@@ -248,11 +203,10 @@ spectraverse/
 │   ├── ui/                 # Reusable UI components
 │   └── providers/          # React context providers
 ├── lib/                     # Core business logic
-│   ├── actions/            # Server actions
+│   ├── actions/            # Client-callable action functions
 │   ├── db/                 # Database utilities
-│   ├── ollama/             # Ollama integration
-│   ├── auth.ts             # Better-Auth configuration
-│   └── auth-client.ts      # Client-side auth
+│   ├── client-db.ts        # LibSQL client (connects to localhost:8080)
+│   └── ollama/             # Ollama integration
 ├── hooks/                   # Custom React hooks
 │   ├── useOllamaChat.ts    # Chat logic & streaming
 │   └── useModelSelection.ts # Model management
@@ -272,12 +226,14 @@ spectraverse/
 
 For the AI chat to work, users must:
 
-1. **Install Ollama** from [ollama.com](https://ollama.com/)
-2. **Pull at least one model**: `ollama pull llama3.2`
-3. **Configure CORS** to allow the application domain
-4. **Keep Ollama running** while using the chat interface
+1. **Run the setup script** — `bash scripts/spectraverse-install.sh` — which installs Ollama via Docker with CORS pre-configured and lets you choose models to download
+2. **Keep the Docker containers running** while using the chat interface (`docker start ollama spectraverse-db`)
 
-The Settings page in the app provides detailed instructions and connection testing.
+The Settings page in the app provides connection testing and lets you pull additional models.
+
+## License
+
+MIT © [Spectraverse Inc.](LICENSE)
 
 ## Acknowledgments
 
