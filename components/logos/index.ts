@@ -1,6 +1,6 @@
-export { default as Gemini } from './Gemini'
-export { default as Replit } from './Replit'
-export { default as MagicUI } from './MagicUI'
-export { default as VSCodium } from './VSCodium'
-export { default as MediaWiki } from './MediaWiki'
-export { default as GooglePaLM } from './GooglePaLM'
+export { default as Ollama } from "./Ollama";
+export { default as Gemma } from "./Gemma";
+export { default as DeepSeek } from "./DeepSeek";
+export { default as Qwen } from "./Qwen";
+export { default as Mistral } from "./Mistral";
+export { default as LMStudio } from "./LMStudio";
