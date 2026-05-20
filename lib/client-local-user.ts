@@ -1,6 +1,7 @@
 import { getClientDb } from "@/lib/client-db";
 import { user } from "@/db/schema";
 import { generateUUID } from "@/lib/utils/uuid";
+import { eq } from "drizzle-orm";
 
 const USER_ID_KEY = "local_user_id";
 
@@ -12,8 +13,13 @@ export async function getClientUserId(): Promise<string> {
   if (typeof window !== "undefined") {
     const stored = localStorage.getItem(USER_ID_KEY);
     if (stored) {
-      cachedUserId = stored;
-      return cachedUserId;
+      const db = getClientDb();
+      const verified = await db.select({ id: user.id }).from(user).where(eq(user.id, stored)).limit(1);
+      if (verified.length > 0) {
+        cachedUserId = stored;
+        return cachedUserId;
+      }
+      localStorage.removeItem(USER_ID_KEY);
     }
   }
 
