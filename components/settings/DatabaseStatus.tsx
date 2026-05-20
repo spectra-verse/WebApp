@@ -72,12 +72,36 @@ export default function DatabaseStatus() {
                 : "bg-red-50 text-red-800 border border-red-200"
             }`}
           >
-            {testResult.success ? (
-              <CheckCircle className="w-4 h-4" />
-            ) : (
-              <XCircle className="w-4 h-4" />
+            {testResult.success ?? <CheckCircle className="w-4 h-4" />}
+            {testResult && (
+              <>
+                <div
+                  className={`flex items-center gap-2 p-3 rounded-lg text-sm`}
+                >
+                  {testResult.success ?? <CheckCircle className="w-4 h-4" />}
+                  <span>
+                    {testResult.success
+                      ? testResult.message
+                      : "Failed to connect to the database"}
+                    {!testResult.success && (
+                      <>
+                        <br />
+                        {
+                          <span className="font-semibold">
+                            Run the setup script to install and configure it:
+                            <br />
+                            <code>
+                              curl -fsSL ./scripts/spectraverse-install.sh |
+                              bash
+                            </code>
+                          </span>
+                        }
+                      </>
+                    )}
+                  </span>
+                </div>
+              </>
             )}
-            <span>{testResult.message}</span>
           </div>
         )}
       </CardContent>

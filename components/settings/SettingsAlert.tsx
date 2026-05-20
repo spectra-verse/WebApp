@@ -22,7 +22,9 @@ export default function SettingsAlert() {
     // Remove the reason parameter from URL
     const params = new URLSearchParams(searchParams.toString());
     params.delete("reason");
-    router.replace(`${pathname}${params.toString() ? `?${params.toString()}` : ""}`);
+    router.replace(
+      `${pathname}${params.toString() ? `?${params.toString()}` : ""}`,
+    );
   };
 
   if (!isVisible || !reason) return null;
@@ -31,15 +33,21 @@ export default function SettingsAlert() {
     switch (reason) {
       case "no-connection":
         return {
-          title: "Cannot Connect to Ollama",
+          title: "Cannot Connect to Local Backend",
           message:
-            "Unable to connect to your Ollama server. Please check that Ollama is running and the URL is correct.",
+            "Your local database and/or Ollama is not running. Run the setup script to start it: ./scripts/spectraverse-install.sh",
         };
       case "no-models":
         return {
           title: "No Models Installed",
           message:
             "No models are installed in your Ollama instance. Please install at least one model using 'ollama pull <model-name>' in your terminal.",
+        };
+      case "no-database":
+        return {
+          title: "Cannot Connect to Local Backend",
+          message:
+            "Your local database and/or Ollama is not running. Run the setup script to start it: ./scripts/spectraverse-install.sh",
         };
       default:
         return {
@@ -59,7 +67,9 @@ export default function SettingsAlert() {
           <h3 className="text-sm font-semibold text-yellow-800 dark:text-yellow-400 mb-1">
             {title}
           </h3>
-          <p className="text-sm text-yellow-700 dark:text-yellow-500">{message}</p>
+          <p className="text-sm text-yellow-700 dark:text-yellow-500">
+            {message}
+          </p>
         </div>
         <button
           onClick={handleDismiss}

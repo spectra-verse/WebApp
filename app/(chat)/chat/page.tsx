@@ -1,19 +1,25 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import NewChat from "@/components/chat/NewChat";
 import { getUserSettings } from "@/lib/actions/getUserSettings";
 
 export default function ChatPage() {
   const [ollamaUrl, setOllamaUrl] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     async function load() {
-      const settings = await getUserSettings();
-      setOllamaUrl(settings.ollamaUrl);
+      try {
+        const settings = await getUserSettings();
+        setOllamaUrl(settings.ollamaUrl);
+      } catch {
+        router.push("/settings?reason=no-database");
+      }
     }
     load();
-  }, []);
+  }, [router]);
 
   if (ollamaUrl === null) {
     return (

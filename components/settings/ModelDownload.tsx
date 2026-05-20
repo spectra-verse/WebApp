@@ -37,7 +37,8 @@ export default function ModelDownload({
 }: ModelDownloadProps) {
   const [selectedModel, setSelectedModel] = useState<string>("");
   const [isDownloading, setIsDownloading] = useState(false);
-  const [downloadProgress, setDownloadProgress] = useState<DownloadProgress | null>(null);
+  const [downloadProgress, setDownloadProgress] =
+    useState<DownloadProgress | null>(null);
   const [downloadResult, setDownloadResult] = useState<{
     success: boolean;
     message: string;
@@ -258,3 +259,4 @@ export default function ModelDownload({
     </div>
   );
 }
+
