@@ -1,4 +1,4 @@
-import Link from "next/link";
+import InstallCommand from "./InstallCommand";
 
 export default function HeroSection() {
   return (
@@ -24,16 +24,7 @@ export default function HeroSection() {
                   and applications, with your personal spark.
                 </p>
 
-                <div className="mt-8">
-                  <div className="flex gap-4 items-center justify-center">
-                    <Link
-                      href="/chat"
-                      className="bg-slate-600 text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-slate-700 transition-colors"
-                    >
-                      Get Started
-                    </Link>
-                  </div>
-                </div>
+                <InstallCommand />
               </div>
             </div>
           </div>

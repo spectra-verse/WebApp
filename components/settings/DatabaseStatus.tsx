@@ -7,6 +7,8 @@ import { Loader2, CheckCircle, XCircle, Database } from "lucide-react";
 import { checkDatabaseConnection } from "@/lib/actions/checkDatabaseConnection";
 
 import { getLibSQLUrl } from "@/lib/client-db";
+import InstallCommand from "../InstallCommand";
+import InstallCommandInline from "../InstallCommandInline";
 
 export default function DatabaseStatus() {
   const [isTesting, setIsTesting] = useState(false);
@@ -80,24 +82,29 @@ export default function DatabaseStatus() {
                 >
                   {testResult.success ?? <CheckCircle className="w-4 h-4" />}
                   <span>
-                    {testResult.success
-                      ? testResult.message
-                      : "Failed to connect to the database"}
-                    {!testResult.success && (
-                      <>
-                        <br />
-                        {
-                          <span className="font-semibold">
-                            Run the setup script to install and configure it:
-                            <br />
-                            <code>
-                              curl -fsSL ./scripts/spectraverse-install.sh |
-                              bash
-                            </code>
-                          </span>
-                        }
-                      </>
+                    {testResult.success ? (
+                      testResult.message
+                    ) : (
+                      <span className="mb-4 inline-block">
+                        Failed to connect to the database
+                      </span>
                     )}
+                    {!testResult.success && <InstallCommandInline />}
+                    {/* {!testResult.success && ( */}
+                    {/*   <> */}
+                    {/*     <br /> */}
+                    {/*     { */}
+                    {/*       <span className="font-semibold"> */}
+                    {/*         Run the setup script to install and configure it: */}
+                    {/*         <br /> */}
+                    {/*         <code> */}
+                    {/*           curl -fsSL ./scripts/spectraverse-install.sh | */}
+                    {/*           bash */}
+                    {/*         </code> */}
+                    {/*       </span> */}
+                    {/*     } */}
+                    {/*   </> */}
+                    {/* )} */}
                   </span>
                 </div>
               </>

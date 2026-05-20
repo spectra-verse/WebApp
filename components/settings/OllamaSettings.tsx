@@ -5,13 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, CheckCircle, XCircle, Settings } from "lucide-react";
+import { Loader2, CheckCircle, Settings } from "lucide-react";
 import { updateUserSettings } from "@/lib/actions/updateUserSettings";
 import { testClientOllamaConnection } from "@/lib/ollama/clientOllama";
 import { UserSettings } from "@/lib/db/types";
 import ModelList from "./ModelList";
 import ModelDownload from "./ModelDownload";
-import { fetchClientOllamaModels } from "@/lib/ollama/clientOllama";
+import InstallCommandInline from "../InstallCommandInline";
 
 interface OllamaSettingsProps {
   initialSettings: UserSettings;
@@ -41,7 +41,6 @@ export default function OllamaSettings({
         const result = await testClientOllamaConnection(
           initialSettings.ollamaUrl,
         );
-        // const result = await fetchClientOllamaModels(ollamaUrl);
         setTestResult({
           success: result.success,
           message: result.success
@@ -147,6 +146,7 @@ export default function OllamaSettings({
         <div className="space-y-2">
           <Label htmlFor="ollama-url">Ollama Server URL</Label>
           <Input
+            readOnly
             id="ollama-url"
             type="url"
             value={ollamaUrl}
@@ -175,15 +175,16 @@ export default function OllamaSettings({
                   {!testResult.success && (
                     <>
                       <br />
-                      <span className="font-semibold">
+                      <span className="font-semibold mb-2 inline-block">
                         Failed to connect to Ollama server
                         <br />
-                        Run the setup script to install and configure it:
-                        <br />
-                        <code>
-                          curl -fsSL ./scripts/spectraverse-install.sh | bash
-                        </code>
+                        {/* Run the setup script to install and configure it: */}
+                        {/* <br /> */}
+                        {/* <code> */}
+                        {/*   curl -fsSL ./scripts/spectraverse-install.sh | bash */}
+                        {/* </code> */}
                       </span>
+                      <InstallCommandInline />
                     </>
                   )}
                 </span>
