@@ -4,18 +4,28 @@ import { useState } from "react";
 import { Clipboard, Check, Zap, Box, Terminal, MessageCircle, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-type Tab = "macos" | "windows";
+type Tab = "macos" | "macos-native" | "windows";
 
 const COMMANDS: Record<Tab, string> = {
   macos:
     "curl -fsSL https://cdn.jsdelivr.net/gh/spectra-verse/WebApp@main/scripts/spectraverse-install.sh | bash",
+  "macos-native":
+    "curl -fsSL https://cdn.jsdelivr.net/gh/spectra-verse/WebApp@main/scripts/spectraverse-install-mac-native.sh | bash",
   windows:
     "https://cdn.jsdelivr.net/gh/spectra-verse/WebApp@main/scripts/spectraverse-install.ps1",
 };
 
+const STEP_TWO_DESC: Record<Tab, string> = {
+  macos: "Installs Ollama, pulls the Gemma 4 model, and starts the local database — all in Docker.",
+  "macos-native":
+    "Installs Ollama natively via Homebrew for Metal GPU acceleration, and starts the local database in Docker.",
+  windows:
+    "Installs Ollama, pulls the Gemma 4 model, and starts the local database — all in Docker.",
+};
+
 export default function InstallCommand() {
   const [copied, setCopied] = useState(false);
-  const [activeTab, setActiveTab] = useState<Tab>("macos");
+  const [activeTab, setActiveTab] = useState<Tab>("macos-native");
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(COMMANDS[activeTab]);
@@ -87,8 +97,7 @@ export default function InstallCommand() {
                 <span className="font-semibold text-sm">Run the setup script</span>
               </div>
               <p className="text-sm text-muted-foreground mb-3">
-                Installs Ollama, pulls the Gemma 4 model, and starts the local
-                database — all in Docker.
+                {STEP_TWO_DESC[activeTab]}
               </p>
 
               {/* Terminal block */}
@@ -101,6 +110,16 @@ export default function InstallCommand() {
                     <span className="ml-2 text-xs text-zinc-500">terminal</span>
                   </div>
                   <div className="flex gap-1 rounded-md bg-zinc-800 p-0.5">
+                    <button
+                      onClick={() => setActiveTab("macos-native")}
+                      className={`rounded px-2.5 py-1 text-xs font-medium transition-colors ${
+                        activeTab === "macos-native"
+                          ? "bg-zinc-600 text-zinc-100"
+                          : "text-zinc-400 hover:text-zinc-200"
+                      }`}
+                    >
+                      macOS (Native)
+                    </button>
                     <button
                       onClick={() => setActiveTab("macos")}
                       className={`rounded px-2.5 py-1 text-xs font-medium transition-colors ${
