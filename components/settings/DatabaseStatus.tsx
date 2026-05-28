@@ -5,7 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, CheckCircle, Database } from "lucide-react";
 import { checkDatabaseConnection } from "@/lib/actions/checkDatabaseConnection";
-
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { getLibSQLUrl } from "@/lib/client-db";
 import InstallCommandInline from "../InstallCommandInline";
 
@@ -21,7 +22,7 @@ export default function DatabaseStatus() {
     setIsTesting(true);
     setTestResult(null);
     try {
-      const result = await checkDatabaseConnection();
+      const result = await checkDatabaseConnection(dbUrl);
       setTestResult(result);
     } catch {
       setTestResult({ success: false, message: "Failed to test connection" });
@@ -33,6 +34,7 @@ export default function DatabaseStatus() {
   useEffect(() => {
     setDbUrl(getLibSQLUrl());
     handleTestConnection();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -44,9 +46,16 @@ export default function DatabaseStatus() {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="space-y-1">
-          <p className="text-sm text-muted-foreground">Database URL</p>
-          <p className="text-sm font-mono">{dbUrl}</p>
+        <div className="space-y-2">
+          <Label htmlFor="db-url">Database URL</Label>
+          <Input
+            id="db-url"
+            type="url"
+            value={dbUrl}
+            onChange={(e) => { setDbUrl(e.target.value); setTestResult(null); }}
+            placeholder="http://localhost:8080"
+            className="font-mono"
+          />
         </div>
 
         <Button

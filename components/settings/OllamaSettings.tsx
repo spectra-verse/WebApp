@@ -108,7 +108,6 @@ export default function OllamaSettings({
         <div className="space-y-2">
           <Label htmlFor="ollama-url">Ollama Server URL</Label>
           <Input
-            readOnly
             id="ollama-url"
             type="url"
             value={ollamaUrl}
