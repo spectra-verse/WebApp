@@ -21,6 +21,21 @@ function Print-Banner {
     Write-Host ""
 }
 
+function Print-InstallInfo {
+    Write-Host "  This script will install the following on your local system:" -ForegroundColor White
+    Write-Host ""
+    Write-Host "  • " -ForegroundColor Cyan -NoNewline
+    Write-Host "Ollama          " -ForegroundColor Blue -NoNewline
+    Write-Host "AI model runtime (Docker container)"
+    Write-Host "  • " -ForegroundColor Cyan -NoNewline
+    Write-Host "gemma4          " -ForegroundColor Blue -NoNewline
+    Write-Host "Google Gemma 4 language model"
+    Write-Host "  • " -ForegroundColor Cyan -NoNewline
+    Write-Host "sqld            " -ForegroundColor Blue -NoNewline
+    Write-Host "Local database (Docker container)"
+    Write-Host ""
+}
+
 function Print-Step($msg)    { Write-Host "➜ $msg" -ForegroundColor Yellow }
 function Print-Success($msg) { Write-Host "✓ $msg" -ForegroundColor Green }
 function Print-Error($msg)   { Write-Host "✗ $msg" -ForegroundColor Red }
@@ -213,6 +228,7 @@ function Print-Summary {
 
 # Main
 Print-Banner
+Print-InstallInfo
 Check-Docker
 
 Write-Host ""

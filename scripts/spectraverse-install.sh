@@ -29,6 +29,15 @@ print_banner() {
   echo ""
 }
 
+print_install_info() {
+  echo -e "  This script will install the following on your local system:"
+  echo ""
+  echo -e "  ${CYAN}•${NC} ${BLUE}Ollama${NC}           AI model runtime  (Docker container)"
+  echo -e "  ${CYAN}•${NC} ${BLUE}gemma4${NC}           Google Gemma 4 language model"
+  echo -e "  ${CYAN}•${NC} ${BLUE}sqld${NC}             Local database     (Docker container)"
+  echo ""
+}
+
 print_step() {
   echo -e "${YELLOW}➜${NC} $1"
 }
@@ -238,6 +247,7 @@ print_summary() {
 # Main execution
 main() {
   print_banner
+  print_install_info
 
   check_docker
 

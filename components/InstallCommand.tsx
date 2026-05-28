@@ -3,8 +3,12 @@
 import { useState } from "react";
 import { Clipboard, Check, AlertTriangle, Zap } from "lucide-react";
 
-const INSTALL_COMMAND =
-  "curl -fsSL https://cdn.jsdelivr.net/gh/spectra-verse/WebApp@main/scripts/spectraverse-install.sh | bash";
+type Tab = "macos" | "windows";
+
+const COMMANDS: Record<Tab, string> = {
+  macos: "curl -fsSL https://cdn.jsdelivr.net/gh/spectra-verse/WebApp@main/scripts/spectraverse-install.sh | bash",
+  windows: "# TODO: add Windows install command",
+};
 
 const prerequisites = [
   { label: "Docker Desktop", note: "with daemon running" },
@@ -12,9 +16,10 @@ const prerequisites = [
 
 export default function InstallCommand() {
   const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState<Tab>("macos");
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(INSTALL_COMMAND);
+    await navigator.clipboard.writeText(COMMANDS[activeTab]);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -29,9 +34,33 @@ export default function InstallCommand() {
             <Zap className="size-4 text-amber-500" />
             <span className="text-sm font-semibold">Quick Setup</span>
           </div>
-          <span className="rounded-full bg-amber-500/15 px-2.5 py-0.5 text-xs font-semibold text-amber-600 dark:text-amber-400">
-            Required
-          </span>
+          <div className="flex items-center gap-2">
+            <div className="flex gap-1 rounded-lg bg-zinc-100 p-1 dark:bg-zinc-800">
+              <button
+                onClick={() => setActiveTab("macos")}
+                className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
+                  activeTab === "macos"
+                    ? "bg-white text-zinc-900 shadow-sm dark:bg-zinc-600 dark:text-zinc-100"
+                    : "text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+                }`}
+              >
+                macOS / Linux
+              </button>
+              <button
+                onClick={() => setActiveTab("windows")}
+                className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
+                  activeTab === "windows"
+                    ? "bg-white text-zinc-900 shadow-sm dark:bg-zinc-600 dark:text-zinc-100"
+                    : "text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+                }`}
+              >
+                Windows
+              </button>
+            </div>
+            <span className="rounded-full bg-amber-500/15 px-2.5 py-0.5 text-xs font-semibold text-amber-600 dark:text-amber-400">
+              Required
+            </span>
+          </div>
         </div>
 
         <div className="space-y-4 p-5">
@@ -65,7 +94,7 @@ export default function InstallCommand() {
             <div className="flex items-center gap-3 px-4 py-3">
               <span className="select-none font-mono text-sm text-green-400">$</span>
               <code className="flex-1 overflow-x-auto whitespace-nowrap font-mono text-sm text-zinc-100">
-                {INSTALL_COMMAND}
+                {COMMANDS[activeTab]}
               </code>
               <button
                 onClick={handleCopy}
