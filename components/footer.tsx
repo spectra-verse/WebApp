@@ -1,3 +1,4 @@
+import { Github } from "lucide-react";
 import Link from "next/link";
 
 const links = [
@@ -39,6 +40,15 @@ export default function FooterSection() {
           ))}
         </div>
         <div className="my-8 flex flex-wrap justify-center gap-6 text-sm">
+          <Link
+            href="https://github.com/spectra-verse/WebApp"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub"
+            className="text-muted-foreground hover:text-primary block"
+          >
+            <Github className="size-6" />
+          </Link>
           <Link
             href="https://www.linkedin.com/in/sucharu-gupta-b66980387/"
             target="_blank"
