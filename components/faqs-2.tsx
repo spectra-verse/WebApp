@@ -33,6 +33,25 @@ export default function FAQsTwo() {
       question: "Is Spectraverse Free to use?",
       answer: "Spectraverse is free for use, forever.",
     },
+    {
+      id: "item-5",
+      question: "Is the source code available?",
+      answer: (
+        <>
+          Yes! Spectraverse is fully open source. You can browse the code, open
+          issues, and contribute on GitHub at{" "}
+          <Link
+            href="https://github.com/spectra-verse/WebApp"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary font-medium hover:underline"
+          >
+            github.com/spectra-verse/WebApp
+          </Link>
+          .
+        </>
+      ),
+    },
   ];
 
   return (
@@ -64,7 +83,7 @@ export default function FAQsTwo() {
                   {item.question}
                 </AccordionTrigger>
                 <AccordionContent>
-                  <p className="text-base">{item.answer}</p>
+                  <p className="text-base leading-relaxed">{item.answer}</p>
                 </AccordionContent>
               </AccordionItem>
             ))}

@@ -35,33 +35,9 @@ export default function InstallCommand() {
             <Zap className="size-4 text-amber-500" />
             <span className="text-sm font-semibold">Quick Setup</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="flex gap-1 rounded-lg bg-zinc-100 p-1 dark:bg-zinc-800">
-              <button
-                onClick={() => setActiveTab("macos")}
-                className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
-                  activeTab === "macos"
-                    ? "bg-white text-zinc-900 shadow-sm dark:bg-zinc-600 dark:text-zinc-100"
-                    : "text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
-                }`}
-              >
-                macOS / Linux
-              </button>
-              <button
-                onClick={() => setActiveTab("windows")}
-                className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
-                  activeTab === "windows"
-                    ? "bg-white text-zinc-900 shadow-sm dark:bg-zinc-600 dark:text-zinc-100"
-                    : "text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
-                }`}
-              >
-                Windows
-              </button>
-            </div>
-            <span className="rounded-full bg-amber-500/15 px-2.5 py-0.5 text-xs font-semibold text-amber-600 dark:text-amber-400">
-              Required
-            </span>
-          </div>
+          <span className="rounded-full bg-amber-500/15 px-2.5 py-0.5 text-xs font-semibold text-amber-600 dark:text-amber-400">
+            Required
+          </span>
         </div>
 
         <div className="space-y-4 p-5">
@@ -84,7 +60,7 @@ export default function InstallCommand() {
             </ul>
             <div className="text-xs">
               Follow your OS instructions for Docker installation.{" "}
-              <a href="https://www.docker.com/get-started/" target="_black">
+              <a href="https://www.docker.com/get-started/" target="_blank">
                 https://www.docker.com/get-started/
               </a>
             </div>
@@ -92,11 +68,35 @@ export default function InstallCommand() {
 
           {/* Terminal command block */}
           <div className="overflow-hidden rounded-lg bg-zinc-900 dark:bg-zinc-950">
-            <div className="flex items-center gap-1.5 border-b border-zinc-700 px-4 py-2">
-              <span className="size-2.5 rounded-full bg-red-500/70" />
-              <span className="size-2.5 rounded-full bg-yellow-500/70" />
-              <span className="size-2.5 rounded-full bg-green-500/70" />
-              <span className="ml-2 text-xs text-zinc-500">terminal</span>
+            <div className="flex items-center justify-between border-b border-zinc-700 px-4 py-2">
+              <div className="flex items-center gap-1.5">
+                <span className="size-2.5 rounded-full bg-red-500/70" />
+                <span className="size-2.5 rounded-full bg-yellow-500/70" />
+                <span className="size-2.5 rounded-full bg-green-500/70" />
+                <span className="ml-2 text-xs text-zinc-500">terminal</span>
+              </div>
+              <div className="flex gap-1 rounded-md bg-zinc-800 p-0.5">
+                <button
+                  onClick={() => setActiveTab("macos")}
+                  className={`rounded px-2.5 py-1 text-xs font-medium transition-colors ${
+                    activeTab === "macos"
+                      ? "bg-zinc-600 text-zinc-100"
+                      : "text-zinc-400 hover:text-zinc-200"
+                  }`}
+                >
+                  macOS / Linux
+                </button>
+                <button
+                  onClick={() => setActiveTab("windows")}
+                  className={`rounded px-2.5 py-1 text-xs font-medium transition-colors ${
+                    activeTab === "windows"
+                      ? "bg-zinc-600 text-zinc-100"
+                      : "text-zinc-400 hover:text-zinc-200"
+                  }`}
+                >
+                  Windows
+                </button>
+              </div>
             </div>
             <div className="flex items-center gap-3 px-4 py-3">
               <span className="select-none font-mono text-sm text-green-400 pb-4">
