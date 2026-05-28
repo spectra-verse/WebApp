@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { Github } from "lucide-react";
 import Image from "next/image";
 
 export default function Navigation() {
@@ -27,6 +28,15 @@ export default function Navigation() {
               }`}
             >
               Home
+            </Link>
+            <Link
+              href="https://github.com/spectra-verse/WebApp"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub"
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Github className="size-5" />
             </Link>
             <Link
               href="/chat"

@@ -14,30 +14,29 @@ export default function FAQsTwo() {
       id: "item-1",
       question: "What is Spectraverse?",
       answer:
-        "Spectraverse is an integrated webapp to seamlessly test different LLM models such as GPT4, Claude, Gemini, etc.",
+        "Spectraverse is an integrated webapp to seamlessly use Ollama supported open source LLM models such as Gemma 4, llama3.1, deepseek-r1 , etc.",
     },
     {
       id: "item-2",
       question: "What are LLM?",
       answer:
-        "LLM stands for Large Language Model. It's a type of artificial intelligence model trained on vast amounts of text data to understand and generate human-like text. These models, like GPT-4, can perform various tasks, such as answering questions, generating content, translating languages, and more, by leveraging patterns learned from the data they were trained on ",
+        "LLM stands for Large Language Model. It's a type of artificial intelligence model trained on vast amounts of text data to understand and generate human-like text. These models, like Gemma 4, can perform various tasks, such as answering questions, generating content, translating languages, and more, by leveraging patterns learned from the data they were trained on ",
     },
     {
       id: "item-3",
-      question: "Where can I test different AI models?",
+      question: "Where can I use different AI models?",
       answer:
-        " You can use Spectraverse's AI Playground to test different models, including GPT4, Claude, Perplexity and more. ",
+        " You can use Spectraverse's AI Playground to use different models, such as Gemma 4, llama3.1, deepseek-r1 and more. ",
     },
     {
       id: "item-4",
       question: "Is Spectraverse Free to use?",
-      answer:
-        " You can start using Spectraverse for free, and later upgrade your plan to access all its features. ",
+      answer: "Spectraverse is free for use, forever.",
     },
   ];
 
   return (
-    <section className="py-16 md:py-24">
+    <section id="faqs" className="py-16 md:py-24">
       <div className="mx-auto max-w-5xl px-4 md:px-6">
         <div className="mx-auto max-w-xl text-center">
           <h2 className="text-balance text-3xl font-bold md:text-4xl lg:text-5xl">
@@ -71,12 +70,12 @@ export default function FAQsTwo() {
             ))}
           </Accordion>
 
-          <p className="text-muted-foreground mt-6 px-8">
-            Can&apos;t find what you&apos;re looking for? Contact our{" "}
-            <Link href="#" className="text-primary font-medium hover:underline">
-              customer support team
-            </Link>
-          </p>
+          {/* <p className="text-muted-foreground mt-6 px-8"> */}
+          {/*   Can&apos;t find what you&apos;re looking for? Contact our{" "} */}
+          {/*   <Link href="#" className="text-primary font-medium hover:underline"> */}
+          {/*     customer support team */}
+          {/*   </Link> */}
+          {/* </p> */}
         </div>
       </div>
     </section>

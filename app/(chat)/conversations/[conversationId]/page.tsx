@@ -24,28 +24,32 @@ export default function ConversationPage() {
   useEffect(() => {
     async function load() {
       setLoading(true);
-      const userId = await getClientUserId();
+      try {
+        const userId = await getClientUserId();
 
-      const [conversation, msgs, settings] = await Promise.all([
-        getConversation(conversationId, userId),
-        getConversationMessages(conversationId, userId),
-        getUserSettings(),
-      ]);
+        const [conversation, msgs, settings] = await Promise.all([
+          getConversation(conversationId, userId),
+          getConversationMessages(conversationId, userId),
+          getUserSettings(),
+        ]);
 
-      if (!conversation) {
-        router.replace("/chat");
-        return;
+        if (!conversation) {
+          router.replace("/chat");
+          return;
+        }
+
+        const messages: AIMessage[] = msgs.map((m) => ({
+          id: m.id,
+          content: m.content,
+          role: m.role,
+          createdAt: new Date(m.createdAt),
+        }));
+
+        setData({ conversation, messages, ollamaUrl: settings.ollamaUrl });
+        setLoading(false);
+      } catch {
+        router.push("/settings?reason=no-database");
       }
-
-      const messages: AIMessage[] = msgs.map((m) => ({
-        id: m.id,
-        content: m.content,
-        role: m.role,
-        createdAt: new Date(m.createdAt),
-      }));
-
-      setData({ conversation, messages, ollamaUrl: settings.ollamaUrl });
-      setLoading(false);
     }
     load();
   }, [conversationId, router]);
