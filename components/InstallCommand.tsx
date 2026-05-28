@@ -6,8 +6,10 @@ import { Clipboard, Check, AlertTriangle, Zap } from "lucide-react";
 type Tab = "macos" | "windows";
 
 const COMMANDS: Record<Tab, string> = {
-  macos: "curl -fsSL https://cdn.jsdelivr.net/gh/spectra-verse/WebApp@main/scripts/spectraverse-install.sh | bash",
-  windows: "# TODO: add Windows install command",
+  macos:
+    "curl -fsSL https://cdn.jsdelivr.net/gh/spectra-verse/WebApp@main/scripts/spectraverse-install.sh | bash",
+  windows:
+    "https://cdn.jsdelivr.net/gh/spectra-verse/WebApp@main/scripts/spectraverse-install.ps1",
 };
 
 const prerequisites = [
@@ -27,7 +29,6 @@ export default function InstallCommand() {
   return (
     <div className="mx-auto mt-10 w-full max-w-2xl text-left">
       <div className="rounded-xl border-2 border-t-4 border-amber-500/60 border-t-amber-500 bg-background shadow-lg">
-
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border px-5 py-3">
           <div className="flex items-center gap-2">
@@ -68,7 +69,7 @@ export default function InstallCommand() {
           <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 dark:border-amber-800/50 dark:bg-amber-950/30">
             <div className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400">
               <AlertTriangle className="size-3.5" />
-              Before you begin
+              Before you begin, You need to have following. (Prerequisites)
             </div>
             <ul className="space-y-1">
               {prerequisites.map(({ label, note }) => (
@@ -81,6 +82,12 @@ export default function InstallCommand() {
                 </li>
               ))}
             </ul>
+            <div className="text-xs">
+              Follow your OS instructions for Docker installation.{" "}
+              <a href="https://www.docker.com/get-started/" target="_black">
+                https://www.docker.com/get-started/
+              </a>
+            </div>
           </div>
 
           {/* Terminal command block */}
@@ -92,8 +99,10 @@ export default function InstallCommand() {
               <span className="ml-2 text-xs text-zinc-500">terminal</span>
             </div>
             <div className="flex items-center gap-3 px-4 py-3">
-              <span className="select-none font-mono text-sm text-green-400">$</span>
-              <code className="flex-1 overflow-x-auto whitespace-nowrap font-mono text-sm text-zinc-100">
+              <span className="select-none font-mono text-sm text-green-400 pb-4">
+                $
+              </span>
+              <code className="flex-1 overflow-x-auto whitespace-nowrap font-mono text-sm text-zinc-100 pb-4">
                 {COMMANDS[activeTab]}
               </code>
               <button
@@ -111,7 +120,8 @@ export default function InstallCommand() {
           </div>
 
           <p className="text-xs text-muted-foreground">
-            Sets up Ollama and the local database in Docker. Takes ~2 minutes on first run.
+            Sets up Ollama and the local database in Docker. Takes ~2 minutes on
+            first run.
           </p>
         </div>
       </div>

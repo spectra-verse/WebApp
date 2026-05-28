@@ -6,8 +6,10 @@ import { Clipboard, Check } from "lucide-react";
 type Tab = "macos" | "windows";
 
 const COMMANDS: Record<Tab, string> = {
-  macos: "curl -fsSL https://cdn.jsdelivr.net/gh/spectra-verse/WebApp@main/scripts/spectraverse-install.sh | bash",
-  windows: "# TODO: add Windows install command",
+  macos:
+    "curl -fsSL https://cdn.jsdelivr.net/gh/spectra-verse/WebApp@main/scripts/spectraverse-install.sh | bash",
+  windows:
+    "https://cdn.jsdelivr.net/gh/spectra-verse/WebApp@main/scripts/spectraverse-install.ps1",
 };
 
 export default function InstallCommandInline() {
@@ -23,7 +25,9 @@ export default function InstallCommandInline() {
   return (
     <div className="overflow-hidden rounded-lg bg-zinc-900 dark:bg-zinc-950 max-w-2xl">
       <div className="flex items-center justify-between px-3 pt-2">
-        <span className="text-orange-600 font-semibold text-sm">Quick setup</span>
+        <span className="text-orange-600 font-semibold text-sm">
+          Quick setup
+        </span>
         <div className="flex gap-1 rounded-lg bg-zinc-800 p-1">
           <button
             onClick={() => setActiveTab("macos")}

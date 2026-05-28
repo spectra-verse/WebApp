@@ -1,4 +1,6 @@
 import InstallCommand from "./InstallCommand";
+import Link from "next/link";
+import { Github } from "lucide-react";
 
 export default function HeroSection() {
   return (
@@ -23,6 +25,18 @@ export default function HeroSection() {
                   Highly customizable components for building modern websites
                   and applications, with your personal spark.
                 </p>
+
+                <div className="mt-8 flex justify-center">
+                  <Link
+                    href="https://github.com/spectra-verse/WebApp"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2.5 rounded-full border border-foreground/20 bg-foreground px-5 py-2.5 text-sm font-semibold text-background shadow-md transition-all hover:bg-foreground/85 hover:shadow-lg"
+                  >
+                    <Github className="size-4" />
+                    View source on GitHub
+                  </Link>
+                </div>
 
                 <InstallCommand />
               </div>

@@ -24,19 +24,12 @@ export default function Navigation() {
             <Link
               href="/"
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                isActive("/") ? "text-foreground bg-primary/10" : "text-muted-foreground hover:text-foreground"
+                isActive("/")
+                  ? "text-foreground bg-primary/10"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               Home
-            </Link>
-            <Link
-              href="https://github.com/spectra-verse/WebApp"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub"
-              className="text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <Github className="size-5" />
             </Link>
             <Link
               href="/chat"
