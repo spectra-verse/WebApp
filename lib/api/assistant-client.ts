@@ -9,7 +9,7 @@ import { Conversation, Message, InsertConversationData } from "@/lib/db/types";
 
 // Check if we're in local proxy mode
 const USE_LOCAL_PROXY = process.env.NEXT_PUBLIC_USE_LOCAL_PROXY === "true";
-const PROXY_URL = process.env.NEXT_PUBLIC_PROXY_URL || "http://localhost:8080";
+const PROXY_URL = process.env.NEXT_PUBLIC_PROXY_URL || "http://localhost:8190";
 const LOCAL_USER_ID = process.env.NEXT_PUBLIC_LOCAL_USER_ID || "local-user";
 
 /**

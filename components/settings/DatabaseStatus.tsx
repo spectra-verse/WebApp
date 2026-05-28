@@ -12,7 +12,7 @@ import InstallCommandInline from "../InstallCommandInline";
 
 export default function DatabaseStatus() {
   const [isTesting, setIsTesting] = useState(false);
-  const [dbUrl, setDbUrl] = useState("http://localhost:8080");
+  const [dbUrl, setDbUrl] = useState("http://localhost:8190");
   const [testResult, setTestResult] = useState<{
     success: boolean;
     message: string;
@@ -53,7 +53,7 @@ export default function DatabaseStatus() {
             type="url"
             value={dbUrl}
             onChange={(e) => { setDbUrl(e.target.value); setTestResult(null); }}
-            placeholder="http://localhost:8080"
+            placeholder="http://localhost:8190"
             className="font-mono"
           />
         </div>
