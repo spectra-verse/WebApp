@@ -1,5 +1,6 @@
 import { Github } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 const links = [
   {
@@ -24,8 +25,9 @@ export default function FooterSection() {
   return (
     <footer className="py-16 md:py-32">
       <div className="mx-auto max-w-5xl px-6">
-        <Link href="/" aria-label="go home" className="mx-auto block size-fit">
-          Spectraverse
+        <Link href="/" aria-label="go home" className="mx-auto flex size-fit items-center gap-2">
+          <Image src="/logo_1.png" width={28} height={28} alt="Spectraverse" />
+          <span className="text-lg font-medium">Spectraverse</span>
         </Link>
 
         <div className="my-8 flex flex-wrap justify-center gap-6 text-sm">

@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, CheckCircle, Settings } from "lucide-react";
-import { updateUserSettings } from "@/lib/actions/updateUserSettings";
 import { testClientOllamaConnection } from "@/lib/ollama/clientOllama";
 import { UserSettings } from "@/lib/db/types";
 import ModelList from "./ModelList";
@@ -21,19 +20,13 @@ export default function OllamaSettings({
   initialSettings,
 }: OllamaSettingsProps) {
   const [ollamaUrl, setOllamaUrl] = useState(initialSettings.ollamaUrl);
-  const [isSaving, setIsSaving] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
   const [testResult, setTestResult] = useState<{
     success: boolean;
     message: string;
   } | null>(null);
-  const [hasChanges, setHasChanges] = useState(false);
   const [modelRefreshTrigger, setModelRefreshTrigger] = useState(0);
   const [installedModels, setInstalledModels] = useState<string[]>([]);
-
-  useEffect(() => {
-    setHasChanges(ollamaUrl !== initialSettings.ollamaUrl);
-  }, [ollamaUrl, initialSettings.ollamaUrl]);
 
   useEffect(() => {
     async function checkConnection() {
@@ -99,37 +92,6 @@ export default function OllamaSettings({
     }
   };
 
-  const handleSave = async () => {
-    if (!hasChanges) return;
-
-    setIsSaving(true);
-    try {
-      await updateUserSettings(ollamaUrl);
-      setTestResult({
-        success: true,
-        message: "Settings saved successfully",
-      });
-      setHasChanges(false);
-
-      // Refresh models after saving new URL
-      setModelRefreshTrigger((prev) => prev + 1);
-    } catch (error) {
-      console.error(error);
-      setTestResult({
-        success: false,
-        message: "Failed to save settings",
-      });
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const handleReset = () => {
-    setOllamaUrl(initialSettings.ollamaUrl);
-    setTestResult(null);
-    setHasChanges(false);
-  };
-
   const handleModelsLoaded = useCallback((models: { name: string }[]) => {
     setInstalledModels(models.map((m) => m.name));
   }, []);
@@ -146,7 +108,6 @@ export default function OllamaSettings({
         <div className="space-y-2">
           <Label htmlFor="ollama-url">Ollama Server URL</Label>
           <Input
-            readOnly
             id="ollama-url"
             type="url"
             value={ollamaUrl}

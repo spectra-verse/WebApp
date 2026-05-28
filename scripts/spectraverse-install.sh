@@ -18,7 +18,7 @@ NC='\033[0m'
 CONTAINER_NAME="ollama"
 OLLAMA_PORT=11434
 SQLD_CONTAINER_NAME="spectraverse-db"
-SQLD_PORT=8080
+SQLD_PORT=8190
 DATA_DIR="$HOME/.spectraverse"
 
 print_banner() {

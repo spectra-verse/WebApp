@@ -130,8 +130,12 @@ export default function Chat({
           />
 
           <div className="flex-1 overflow-y-auto mb-4" onScroll={handleScroll}>
-            {messages.map((message) => (
-              <Message key={message.id} message={message} />
+            {messages.map((message, index) => (
+              <Message
+                key={message.id}
+                message={message}
+                isStreaming={isLoading && index === messages.length - 1}
+              />
             ))}
             <div ref={messagesEndRef} />
           </div>

@@ -40,7 +40,7 @@ export async function streamOllamaChat(
 ): Promise<void> {
   // Check if using local proxy mode
   const useLocalProxy = process.env.NEXT_PUBLIC_USE_LOCAL_PROXY === "true";
-  const proxyUrl = process.env.NEXT_PUBLIC_PROXY_URL || "http://localhost:8080";
+  const proxyUrl = process.env.NEXT_PUBLIC_PROXY_URL || "http://localhost:8190";
 
   // Debug logging
   console.log("[streamOllamaChat] useLocalProxy:", useLocalProxy);

@@ -5,9 +5,9 @@ const LIBSQL_URL_KEY = "libsql_url";
 
 export function getLibSQLUrl(): string {
   if (typeof window !== "undefined") {
-    return localStorage.getItem(LIBSQL_URL_KEY) ?? "http://localhost:8080";
+    return localStorage.getItem(LIBSQL_URL_KEY) ?? "http://localhost:8190";
   }
-  return "http://localhost:8080";
+  return "http://localhost:8190";
 }
 
 export function setLibSQLUrl(url: string): void {

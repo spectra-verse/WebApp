@@ -4,8 +4,10 @@ import { Bot } from "lucide-react";
 import MdRender from "./MdRender";
 export default function Message({
   message,
+  isStreaming = false,
 }: {
   message: MessageType;
+  isStreaming?: boolean;
 }) {
   const { role, content } = message;
   if (role === "assistant") {
@@ -23,6 +25,13 @@ export default function Message({
           </div>
         )}
         {response && <MdRender content={response} />}
+        {!content && isStreaming && (
+          <div className="flex items-center gap-1 pl-1">
+            <span className="size-2 rounded-full bg-muted-foreground animate-bounce [animation-delay:-0.3s]" />
+            <span className="size-2 rounded-full bg-muted-foreground animate-bounce [animation-delay:-0.15s]" />
+            <span className="size-2 rounded-full bg-muted-foreground animate-bounce" />
+          </div>
+        )}
       </div>
     );
   }

@@ -8,7 +8,7 @@ $ErrorActionPreference = "Stop"
 $ContainerName     = "ollama"
 $OllamaPort        = 11434
 $SqldContainerName = "spectraverse-db"
-$SqldPort          = 8080
+$SqldPort          = 8190
 $DataDir           = "$env:USERPROFILE\.spectraverse"
 
 function Print-Banner {
