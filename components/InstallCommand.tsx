@@ -60,7 +60,7 @@ export default function InstallCommand() {
               </div>
               <p className="text-sm text-muted-foreground mb-2">
                 Ollama and the local database run inside Docker containers.
-                Install Docker Desktop and make sure it's running before continuing.
+                Install Docker Desktop and make sure it&apos;s running before continuing.
               </p>
               <a
                 href="https://www.docker.com/get-started/"
@@ -157,7 +157,7 @@ export default function InstallCommand() {
                 <span className="font-semibold text-sm">Open Spectraverse</span>
               </div>
               <p className="text-sm text-muted-foreground mb-3">
-                Once the script finishes, you're ready to go. No account needed.
+                Once the script finishes, you&apos;re ready to go. No account needed.
               </p>
               <Link
                 href="/chat"

@@ -3,11 +3,10 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, CheckCircle, XCircle, Database } from "lucide-react";
+import { Loader2, CheckCircle, Database } from "lucide-react";
 import { checkDatabaseConnection } from "@/lib/actions/checkDatabaseConnection";
 
 import { getLibSQLUrl } from "@/lib/client-db";
-import InstallCommand from "../InstallCommand";
 import InstallCommandInline from "../InstallCommandInline";
 
 export default function DatabaseStatus() {

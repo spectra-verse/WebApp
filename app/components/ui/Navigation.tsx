@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { Github } from "lucide-react";
 import Image from "next/image";
 
 export default function Navigation() {
