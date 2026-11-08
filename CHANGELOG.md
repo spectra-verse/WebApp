@@ -2,7 +2,32 @@
 
 All notable changes to Spectraverse. Model-support updates are reviewed weekly against the [Ollama library](https://ollama.com/library).
 
-## 2026-11-08
+## 2026-11-08 — Latest models for MacBook Pro
+
+### Models
+- Curated list rebuilt around **current, local models that run well on Apple Silicon MacBooks**. Each model now lists the minimum Mac memory it needs (`minMemoryGB`) and the minimum Ollama version (`requiresOllama`).
+- **8 GB+:** Bonsai 2 (Prism ML, ternary 9B), Nemotron 3 Nano 4B (NVIDIA), LFM3 1.7B (Liquid AI).
+- **16 GB+:** Gemma 4 (Google, default), Qwen 3.5 9B (Alibaba), Ornith 1.5 9B (Ornith), Ministral 3 8B (Mistral AI), Granite 4.2 8B (IBM), LFM2.5 8B (Liquid AI), MiMo V2.6 (Xiaomi).
+- **24 GB+:** gpt-oss 20B (OpenAI). **32 GB+:** Qwen 3.8 27B (Alibaba), Muse Glimmer 30B (Meta). **48 GB+:** Laguna XS 2.1 (Poolside), Flint 40B MoE (Recursive).
+- **Removed (outdated or superseded):** DeepSeek R1 and DeepSeek Coder V2 (DeepSeek's newer models are cloud-only), Phi-4 (no newer local Phi), Llama 3.2 (Meta's current open model is Muse Glimmer), Qwen3 Coder, Qwen3 VL and Qwen 3.6 (superseded by Qwen 3.5/3.8, which include vision).
+- New providers: Ornith, Mistral AI, IBM, Prism ML, NVIDIA, Meta (Muse), Poolside, Recursive.
+- Every curated model supports tool calling, in line with the product goal of a local coding agent and assistant.
+
+### Install scripts
+- macOS native: checks the Ollama version and **auto-updates** to 0.40.15+ (Homebrew formula/cask, or the signed Ollama.app download) — newer models refuse to download on older Ollama.
+- A model that fails to download no longer aborts the whole install; it's skipped and listed at the end.
+- Model menus show provider and minimum Mac memory.
+
+### App & website
+- Model picker shows "Mac N GB+" and the required Ollama version.
+- Landing page model chips show the provider; hero copy now describes Spectraverse as a private AI assistant and coding agent on local models.
+- README: vision statement, Mac-memory model table, and Ollama version guidance.
+
+### Tested on a 24 GB M4 MacBook Pro
+- Bonsai 2: 33 tok/s · Gemma 4: 19 tok/s.
+- LFM3 and MiMo V2.6 need Ollama 0.40.13+ / 0.40.15+ (machine has 0.40.9; the auto-update step was not run here).
+
+## 2026-11-08 — Initial model refresh
 
 ### Models
 - New single source of truth for supported models: `lib/models/curated-models.json`, used by the landing page, the FAQ, and **Settings → Install New Models**.

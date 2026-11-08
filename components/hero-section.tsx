@@ -18,12 +18,13 @@ export default function HeroSection() {
                   in one place
                 </h1>
                 <p className="mx-auto mt-8 hidden max-w-2xl text-wrap text-lg sm:block">
-                  Your all in one AI companion. Generate Images, videos, codes,
-                  docs, debug your web apps all with Spectraverse interface.
+                  A private AI assistant and coding agent powered by the latest
+                  open-source models — running on your own Mac, so your code and
+                  conversations never leave your machine.
                 </p>
                 <p className="mx-auto mt-6 max-w-2xl text-wrap sm:hidden">
-                  Chat with the latest open-source AI models, privately, on
-                  your own computer.
+                  A private AI assistant and coding agent on the latest
+                  open-source models, running on your own Mac.
                 </p>
 
                 <div className="mt-8 flex justify-center">

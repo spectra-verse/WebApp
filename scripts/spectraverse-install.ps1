@@ -10,7 +10,8 @@ $OllamaPort        = 11434
 $SqldContainerName = "spectraverse-db"
 
 # Models to pull. Override with e.g.  $env:SPECTRAVERSE_MODELS = "gemma4 qwen3.5"
-# Popular options: gemma4, qwen3.5, qwen3.8, gpt-oss, deepseek-r1, mimo-v2.6, qwen3-coder, qwen3-vl, llama3.2, lfm3
+# Popular options (min RAM): gemma4, qwen3.5, ornith-1.5:9b, ministral-3:8b, granite4.2:8b, lfm2.5:8b, mimo-v2.6 (16GB);
+#   bonsai-2, nemotron-3-nano:4b, lfm3 (8GB); gpt-oss:20b (24GB); qwen3.8, muse-glimmer (32GB); laguna-xs-2.1, flint (48GB)
 $SelectedModels = @("gemma4")
 if ($env:SPECTRAVERSE_MODELS) {
     $SelectedModels = @($env:SPECTRAVERSE_MODELS -split '[,\s]+' | Where-Object { $_ })

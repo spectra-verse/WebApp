@@ -11,7 +11,7 @@ import curated from "@/lib/models/curated-models.json";
 
 const featuredModels = curated.models
   .slice(0, 5)
-  .map((m) => m.label)
+  .map((m) => `${m.label} (${m.provider})`)
   .join(", ");
 
 export default function FAQsTwo() {

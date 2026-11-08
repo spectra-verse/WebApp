@@ -19,7 +19,9 @@ type CuratedModel = {
   provider: string;
   category: string;
   sizeGB: number;
+  minMemoryGB: number;
   capabilities: string[];
+  requiresOllama?: string;
 };
 
 const CURATED_MODELS: CuratedModel[] = curated.models;
@@ -68,7 +70,8 @@ export default function ModelDownload({
       <div>
         <h3 className="text-lg font-medium mb-2">Install New Models</h3>
         <p className="text-sm text-muted-foreground mb-4">
-          Select a model, then run the command in your terminal
+          Latest open-source models picked to run well on Apple Silicon
+          MacBooks. Select one, then run the command in your terminal.
         </p>
       </div>
 
@@ -83,7 +86,7 @@ export default function ModelDownload({
               <SelectItem key={model.value} value={model.value}>
                 {model.label}
                 <span className="ml-2 text-xs text-muted-foreground">
-                  {model.category} · {model.sizeGB} GB
+                  {model.category} · {model.sizeGB} GB · Mac {model.minMemoryGB} GB+
                 </span>
                 {installed && (
                   <span className="ml-2 text-xs text-green-600 dark:text-green-400">
@@ -107,9 +110,12 @@ export default function ModelDownload({
             <>
               {selected && (
                 <p className="text-sm text-muted-foreground">
-                  {selected.provider} · ~{selected.sizeGB} GB download
+                  {selected.provider} · ~{selected.sizeGB} GB download · runs
+                  on Macs with {selected.minMemoryGB} GB+ memory
                   {selected.capabilities.length > 0 &&
                     ` · ${selected.capabilities.join(", ")}`}
+                  {selected.requiresOllama &&
+                    ` · needs Ollama ${selected.requiresOllama}+`}
                 </p>
               )}
               <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">

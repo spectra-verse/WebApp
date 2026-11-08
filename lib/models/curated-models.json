@@ -1,20 +1,24 @@
 {
   "updated": "2026-11-08",
   "source": "https://ollama.com/library",
+  "selectionRules": "Local (non-cloud) Ollama models from the last ~6 months, or the provider's newest Mac-runnable release. minMemoryGB = smallest MacBook unified memory that runs it comfortably (download size + headroom within ~70% of RAM).",
   "defaultModel": "gemma4",
+  "minOllamaVersion": "0.40.15",
   "models": [
-    { "value": "gemma4", "label": "Gemma 4", "provider": "Google", "category": "General", "sizeGB": 6.6, "capabilities": ["vision", "tools", "thinking"] },
-    { "value": "qwen3.8", "label": "Qwen 3.8", "provider": "Alibaba", "category": "General", "sizeGB": 17.7, "capabilities": ["vision", "tools", "thinking"] },
-    { "value": "qwen3.6", "label": "Qwen 3.6", "provider": "Alibaba", "category": "General", "sizeGB": 22.6, "capabilities": ["vision", "tools", "thinking"] },
-    { "value": "qwen3.5", "label": "Qwen 3.5", "provider": "Alibaba", "category": "General", "sizeGB": 6.6, "capabilities": ["vision", "tools", "thinking"] },
-    { "value": "gpt-oss", "label": "gpt-oss (20B)", "provider": "OpenAI", "category": "Reasoning", "sizeGB": 13.8, "capabilities": ["tools", "thinking"] },
-    { "value": "deepseek-r1", "label": "DeepSeek R1", "provider": "DeepSeek", "category": "Reasoning", "sizeGB": 5.2, "capabilities": ["tools", "thinking"] },
-    { "value": "mimo-v2.6", "label": "MiMo V2.6", "provider": "Xiaomi", "category": "Coding", "sizeGB": 6.6, "capabilities": ["vision", "tools", "thinking"] },
-    { "value": "qwen3-coder", "label": "Qwen3 Coder", "provider": "Alibaba", "category": "Coding", "sizeGB": 18.6, "capabilities": ["tools"] },
-    { "value": "deepseek-coder-v2", "label": "DeepSeek Coder V2", "provider": "DeepSeek", "category": "Coding", "sizeGB": 8.9, "capabilities": [] },
-    { "value": "qwen3-vl", "label": "Qwen3 VL", "provider": "Alibaba", "category": "Vision", "sizeGB": 6.2, "capabilities": ["vision", "tools", "thinking"] },
-    { "value": "phi4", "label": "Phi-4", "provider": "Microsoft", "category": "General", "sizeGB": 9.1, "capabilities": [] },
-    { "value": "llama3.2", "label": "Llama 3.2 (3B)", "provider": "Meta", "category": "Small", "sizeGB": 2.0, "capabilities": ["tools"] },
-    { "value": "lfm3", "label": "LFM3 (1.7B)", "provider": "Liquid AI", "category": "Small", "sizeGB": 1.1, "capabilities": ["tools", "thinking"] }
+    {"value": "gemma4", "label": "Gemma 4", "provider": "Google", "category": "General", "sizeGB": 6.6, "minMemoryGB": 16, "capabilities": ["vision", "tools", "thinking"], "requiresOllama": "0.30.9"},
+    {"value": "qwen3.5", "label": "Qwen 3.5 (9B)", "provider": "Alibaba", "category": "General", "sizeGB": 6.6, "minMemoryGB": 16, "capabilities": ["vision", "tools", "thinking"], "requiresOllama": "0.30.0"},
+    {"value": "ornith-1.5:9b", "label": "Ornith 1.5 (9B)", "provider": "Ornith", "category": "General", "sizeGB": 6.6, "minMemoryGB": 16, "capabilities": ["vision", "tools", "thinking"]},
+    {"value": "ministral-3:8b", "label": "Ministral 3 (8B)", "provider": "Mistral AI", "category": "General", "sizeGB": 6.0, "minMemoryGB": 16, "capabilities": ["vision", "tools"]},
+    {"value": "granite4.2:8b", "label": "Granite 4.2 (8B)", "provider": "IBM", "category": "General", "sizeGB": 5.3, "minMemoryGB": 16, "capabilities": ["tools", "thinking"]},
+    {"value": "lfm2.5:8b", "label": "LFM2.5 (8B)", "provider": "Liquid AI", "category": "General", "sizeGB": 5.2, "minMemoryGB": 16, "capabilities": ["tools", "thinking"], "requiresOllama": "0.30.0"},
+    {"value": "mimo-v2.6", "label": "MiMo V2.6 (9B)", "provider": "Xiaomi", "category": "Coding", "sizeGB": 6.6, "minMemoryGB": 16, "capabilities": ["vision", "tools", "thinking"], "requiresOllama": "0.40.15"},
+    {"value": "bonsai-2", "label": "Bonsai 2 (9B, ternary)", "provider": "Prism ML", "category": "Small", "sizeGB": 3.2, "minMemoryGB": 8, "capabilities": ["vision", "tools", "thinking"], "requiresOllama": "0.40.6"},
+    {"value": "nemotron-3-nano:4b", "label": "Nemotron 3 Nano (4B)", "provider": "NVIDIA", "category": "Small", "sizeGB": 2.8, "minMemoryGB": 8, "capabilities": ["tools", "thinking"], "requiresOllama": "0.17.1"},
+    {"value": "lfm3", "label": "LFM3 (1.7B)", "provider": "Liquid AI", "category": "Small", "sizeGB": 1.1, "minMemoryGB": 8, "capabilities": ["tools", "thinking"], "requiresOllama": "0.40.13"},
+    {"value": "gpt-oss:20b", "label": "gpt-oss (20B)", "provider": "OpenAI", "category": "Reasoning", "sizeGB": 13.8, "minMemoryGB": 24, "capabilities": ["tools", "thinking"], "requiresOllama": "0.30.0"},
+    {"value": "qwen3.8", "label": "Qwen 3.8 (27B)", "provider": "Alibaba", "category": "General", "sizeGB": 17.7, "minMemoryGB": 32, "capabilities": ["vision", "tools", "thinking"], "requiresOllama": "0.32.12"},
+    {"value": "muse-glimmer", "label": "Muse Glimmer (30B)", "provider": "Meta", "category": "Agents", "sizeGB": 18.2, "minMemoryGB": 32, "capabilities": ["vision", "tools", "thinking"], "requiresOllama": "0.32.8"},
+    {"value": "laguna-xs-2.1", "label": "Laguna XS 2.1", "provider": "Poolside", "category": "Coding", "sizeGB": 20.3, "minMemoryGB": 48, "capabilities": ["tools", "thinking"], "requiresOllama": "0.32.3"},
+    {"value": "flint", "label": "Flint (40B MoE)", "provider": "Recursive", "category": "Coding", "sizeGB": 22.9, "minMemoryGB": 48, "capabilities": ["tools", "thinking"], "requiresOllama": "0.40.9"}
   ]
 }

@@ -1,6 +1,8 @@
 Spectraverse
 
-> Privacy-first AI chat application with local LLM processing
+> Privacy-first AI assistant and coding agent on local, privately hosted open-source models
+
+**Vision:** the experience of a modern AI coding agent, desktop app and web assistant — but running entirely on models you host yourself (on your Mac or your own server), with no data leaving your control.
 
 Spectraverse is a modern web application that allows users to interact with AI models running locally on their machines via Ollama. Built with Next.js 15, it emphasizes data ownership, security, and offline operation while providing a polished web interface for AI conversations.
 
@@ -163,6 +165,8 @@ This sets up:
 - **sqld** (LibSQL) container `spectraverse-db` on `localhost:8190` with the full database schema
 - Your chosen Ollama models
 
+**Keeping Ollama current.** The newest models need a recent Ollama (currently **0.40.15+**; each model's minimum is `requiresOllama` in the model list). The macOS native script updates Ollama automatically when it's older (Homebrew formula/cask, or by replacing `/Applications/Ollama.app` with the signed download). The Docker scripts always pull the latest `ollama/ollama` image. If a model fails to download, the script skips it and lists it at the end.
+
 **Choosing models.** On macOS/Linux the script shows a numbered menu; press Enter for Gemma 4. To skip the menu (e.g. in CI) set `SPECTRAVERSE_MODELS`:
 
 ```bash
@@ -173,7 +177,17 @@ On Windows: `$env:SPECTRAVERSE_MODELS = "gemma4 qwen3.5"` before running the scr
 
 ## Supported Models
 
-Any Ollama model works. The curated list shown on the landing page, in **Settings → Install New Models**, and in the install menus lives in [`lib/models/curated-models.json`](lib/models/curated-models.json) and is reviewed weekly against the [Ollama library](https://ollama.com/library). Current picks include Gemma 4, Qwen 3.5 / 3.8, gpt-oss, DeepSeek R1, MiMo V2.6, Qwen3 Coder, Qwen3 VL, Llama 3.2 and LFM3. See [CHANGELOG.md](CHANGELOG.md) for updates.
+Any Ollama model works. The curated list shown on the landing page, in **Settings → Install New Models**, and in the install menus lives in [`lib/models/curated-models.json`](lib/models/curated-models.json) and is reviewed weekly against the [Ollama library](https://ollama.com/library). It is tuned for Apple Silicon MacBooks — every model lists the minimum unified memory it needs:
+
+| Mac memory | Models |
+|---|---|
+| 8 GB+ | Bonsai 2 (Prism ML), Nemotron 3 Nano 4B (NVIDIA), LFM3 1.7B (Liquid AI) |
+| 16 GB+ | **Gemma 4 (default, Google)**, Qwen 3.5 9B (Alibaba), Ornith 1.5 9B, Ministral 3 8B (Mistral AI), Granite 4.2 8B (IBM), LFM2.5 8B (Liquid AI), MiMo V2.6 (Xiaomi) |
+| 24 GB+ | gpt-oss 20B (OpenAI) |
+| 32 GB+ | Qwen 3.8 27B (Alibaba), Muse Glimmer 30B (Meta) |
+| 48 GB+ | Laguna XS 2.1 (Poolside), Flint 40B MoE (Recursive) |
+
+See [CHANGELOG.md](CHANGELOG.md) for updates.
 
 ### 3. Start Development Server
 

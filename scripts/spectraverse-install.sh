@@ -32,16 +32,21 @@ print_banner() {
 # Curated models offered by the installer (keep in sync with lib/models/curated-models.json)
 DEFAULT_MODELS="gemma4"
 MODEL_MENU=(
-  "gemma4|Gemma 4 (Google) — general, vision|6.6 GB"
-  "qwen3.5|Qwen 3.5 (Alibaba) — general, vision|6.6 GB"
-  "qwen3.8|Qwen 3.8 (Alibaba) — newest Qwen, strong all-round|17.7 GB"
-  "gpt-oss|gpt-oss 20B (OpenAI) — reasoning|13.8 GB"
-  "deepseek-r1|DeepSeek R1 — reasoning|5.2 GB"
-  "mimo-v2.6|MiMo V2.6 (Xiaomi) — coding & agents|6.6 GB"
-  "qwen3-coder|Qwen3 Coder — coding|18.6 GB"
-  "qwen3-vl|Qwen3 VL — vision|6.2 GB"
-  "llama3.2|Llama 3.2 3B (Meta) — small & fast|2.0 GB"
-  "lfm3|LFM3 1.7B (Liquid AI) — tiny, runs anywhere|1.1 GB"
+  "gemma4|Gemma 4 (Google) — general, vision · Mac 16GB+|6.6 GB"
+  "qwen3.5|Qwen 3.5 9B (Alibaba) — general, vision · Mac 16GB+|6.6 GB"
+  "ornith-1.5:9b|Ornith 1.5 9B (Ornith) — general, vision · Mac 16GB+|6.6 GB"
+  "ministral-3:8b|Ministral 3 8B (Mistral AI) — general, vision · Mac 16GB+|6.0 GB"
+  "granite4.2:8b|Granite 4.2 8B (IBM) — general, tools · Mac 16GB+|5.3 GB"
+  "lfm2.5:8b|LFM2.5 8B (Liquid AI) — fast general · Mac 16GB+|5.2 GB"
+  "mimo-v2.6|MiMo V2.6 9B (Xiaomi) — coding & agents · Mac 16GB+|6.6 GB"
+  "bonsai-2|Bonsai 2 9B ternary (Prism ML) — small, vision · Mac 8GB+|3.2 GB"
+  "nemotron-3-nano:4b|Nemotron 3 Nano 4B (NVIDIA) — small · Mac 8GB+|2.8 GB"
+  "lfm3|LFM3 1.7B (Liquid AI) — tiny · Mac 8GB+|1.1 GB"
+  "gpt-oss:20b|gpt-oss 20B (OpenAI) — reasoning · Mac 24GB+|13.8 GB"
+  "qwen3.8|Qwen 3.8 27B (Alibaba) — strongest all-round · Mac 32GB+|17.7 GB"
+  "muse-glimmer|Muse Glimmer 30B (Meta) — agents, vision · Mac 32GB+|18.2 GB"
+  "laguna-xs-2.1|Laguna XS 2.1 (Poolside) — coding · Mac 48GB+|20.3 GB"
+  "flint|Flint 40B MoE (Recursive) — coding agents · Mac 48GB+|22.9 GB"
 )
 
 # Decide which models to pull.
@@ -62,7 +67,7 @@ choose_models() {
   local i=1
   for entry in "${MODEL_MENU[@]}"; do
     IFS='|' read -r name desc size <<< "$entry"
-    printf "  ${CYAN}%2d${NC}) %-50s ${DIM}%s${NC}\n" "$i" "$desc" "$size"
+    printf "  ${CYAN}%2d${NC}) %-62s ${DIM}%s${NC}\n" "$i" "$desc" "$size"
     i=$((i + 1))
   done
   printf "  > "
@@ -319,10 +324,17 @@ main() {
 
   for model in $SELECTED_MODELS; do
     print_step "Pulling $model..."
-    docker exec ${CONTAINER_NAME} ollama pull "$model"
-    print_success "$model installed"
+    if docker exec ${CONTAINER_NAME} ollama pull "$model"; then
+      print_success "$model installed"
+    else
+      FAILED_MODELS="$FAILED_MODELS $model"
+      echo -e "  ${YELLOW}!${NC} Couldn't download $model — skipping (try later: docker exec ${CONTAINER_NAME} ollama pull $model)"
+    fi
   done
 
+  if [ -n "${FAILED_MODELS:-}" ]; then
+    echo -e "  ${YELLOW}!${NC} Not installed:${FAILED_MODELS}"
+  fi
   print_summary
 }
 

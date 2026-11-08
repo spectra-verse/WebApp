@@ -25,7 +25,7 @@ export default function IntegrationsSection() {
               </p>
               <div>
                 <p className="text-sm font-medium">
-                  Supported models{" "}
+                  Supported models — tuned for MacBook Pro{" "}
                   <span className="text-muted-foreground font-normal">
                     · updated {curated.updated}
                   </span>
@@ -35,9 +35,13 @@ export default function IntegrationsSection() {
                     <li
                       key={m.value}
                       className="rounded-full border px-3 py-1 text-xs"
-                      title={`${m.provider} · ${m.category} · ~${m.sizeGB} GB`}
+                      title={`${m.provider} · ${m.category} · ~${m.sizeGB} GB · runs on ${m.minMemoryGB} GB+ Macs`}
                     >
                       {m.label}
+                      <span className="text-muted-foreground">
+                        {" "}
+                        · {m.provider}
+                      </span>
                     </li>
                   ))}
                 </ul>
