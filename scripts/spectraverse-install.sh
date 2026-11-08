@@ -29,11 +29,67 @@ print_banner() {
   echo ""
 }
 
+# Curated models offered by the installer (keep in sync with lib/models/curated-models.json)
+DEFAULT_MODELS="gemma4"
+MODEL_MENU=(
+  "gemma4|Gemma 4 (Google) — general, vision|6.6 GB"
+  "qwen3.5|Qwen 3.5 (Alibaba) — general, vision|6.6 GB"
+  "qwen3.8|Qwen 3.8 (Alibaba) — newest Qwen, strong all-round|17.7 GB"
+  "gpt-oss|gpt-oss 20B (OpenAI) — reasoning|13.8 GB"
+  "deepseek-r1|DeepSeek R1 — reasoning|5.2 GB"
+  "mimo-v2.6|MiMo V2.6 (Xiaomi) — coding & agents|6.6 GB"
+  "qwen3-coder|Qwen3 Coder — coding|18.6 GB"
+  "qwen3-vl|Qwen3 VL — vision|6.2 GB"
+  "llama3.2|Llama 3.2 3B (Meta) — small & fast|2.0 GB"
+  "lfm3|LFM3 1.7B (Liquid AI) — tiny, runs anywhere|1.1 GB"
+)
+
+# Decide which models to pull.
+# Priority: SPECTRAVERSE_MODELS env var (space/comma separated) > interactive menu > default.
+# The menu reads from /dev/tty so it also works with `curl ... | bash`.
+choose_models() {
+  if [ -n "${SPECTRAVERSE_MODELS:-}" ]; then
+    SELECTED_MODELS=$(echo "$SPECTRAVERSE_MODELS" | tr ',' ' ')
+    return 0
+  fi
+
+  SELECTED_MODELS="$DEFAULT_MODELS"
+  if ! { exec 3</dev/tty; } 2>/dev/null; then
+    return 0
+  fi
+
+  echo -e "  ${YELLOW}Choose models to download${NC} ${DIM}(e.g. 1 5 9 — press Enter for Gemma 4)${NC}"
+  local i=1
+  for entry in "${MODEL_MENU[@]}"; do
+    IFS='|' read -r name desc size <<< "$entry"
+    printf "  ${CYAN}%2d${NC}) %-50s ${DIM}%s${NC}\n" "$i" "$desc" "$size"
+    i=$((i + 1))
+  done
+  printf "  > "
+  local answer=""
+  read -r answer <&3 || true
+  exec 3<&-
+
+  if [ -n "$answer" ]; then
+    local picked=""
+    for n in $(echo "$answer" | tr ',' ' '); do
+      if [[ "$n" =~ ^[0-9]+$ ]] && [ "$n" -ge 1 ] && [ "$n" -le "${#MODEL_MENU[@]}" ]; then
+        IFS='|' read -r name _ <<< "${MODEL_MENU[$((n - 1))]}"
+        picked="$picked $name"
+      fi
+    done
+    if [ -n "$picked" ]; then
+      SELECTED_MODELS="${picked# }"
+    fi
+  fi
+  echo ""
+}
+
 print_install_info() {
   echo -e "  This script will install the following on your local system:"
   echo ""
   echo -e "  ${CYAN}•${NC} ${BLUE}Ollama${NC}           AI model runtime  (Docker container)"
-  echo -e "  ${CYAN}•${NC} ${BLUE}gemma4${NC}           Google Gemma 4 language model"
+  echo -e "  ${CYAN}•${NC} ${BLUE}AI models${NC}        Gemma 4 by default — or pick others from a list"
   echo -e "  ${CYAN}•${NC} ${BLUE}sqld${NC}             Local database     (Docker container)"
   echo ""
 }
@@ -155,7 +211,7 @@ wait_for_sqld() {
 run_migrations() {
   print_step "Running database migrations..."
 
-  curl -sf -X POST "http://localhost:${SQLD_PORT}/v2/pipeline" \
+  curl -sf -o /dev/null -X POST "http://localhost:${SQLD_PORT}/v2/pipeline" \
     -H "Content-Type: application/json" \
     -d @- <<'MIGRATION'
 {
@@ -230,13 +286,13 @@ print_summary() {
   echo -e "  ${BLUE}Database${NC}       http://localhost:${SQLD_PORT}"
   echo -e "  ${BLUE}Data${NC}           ${DATA_DIR}/db"
   echo -e "  ${BLUE}CORS${NC}           Enabled for all origins (*)"
-  echo -e "  ${BLUE}Model${NC}          gemma4"
+  echo -e "  ${BLUE}Models${NC}         ${SELECTED_MODELS}"
   echo ""
   echo -e "  ${YELLOW}Commands${NC}"
   echo -e "  ${DIM}────────────────────────────────────────────${NC}"
   echo "  Test Ollama   curl http://localhost:${OLLAMA_PORT}/api/tags"
   echo "  Test DB       curl -s -X POST http://localhost:${SQLD_PORT}/v2/pipeline -H 'Content-Type: application/json' -d '{\"requests\":[{\"type\":\"close\"}]}'"
-  echo "  Chat          docker exec -it ${CONTAINER_NAME} ollama run gemma4"
+  echo "  Chat          docker exec -it ${CONTAINER_NAME} ollama run ${SELECTED_MODELS%% *}"
   echo "  List models   docker exec ${CONTAINER_NAME} ollama list"
   echo "  Pull more     docker exec ${CONTAINER_NAME} ollama pull <model>"
   echo "  Stop all      docker stop ${CONTAINER_NAME} ${SQLD_CONTAINER_NAME}"
@@ -248,6 +304,7 @@ print_summary() {
 main() {
   print_banner
   print_install_info
+  choose_models
 
   check_docker
 
@@ -260,9 +317,11 @@ main() {
   setup_ollama
   wait_for_ollama
 
-  print_step "Pulling gemma4..."
-  docker exec ${CONTAINER_NAME} ollama pull gemma4
-  print_success "gemma4 installed"
+  for model in $SELECTED_MODELS; do
+    print_step "Pulling $model..."
+    docker exec ${CONTAINER_NAME} ollama pull "$model"
+    print_success "$model installed"
+  done
 
   print_summary
 }

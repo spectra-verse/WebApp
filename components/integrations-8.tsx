@@ -7,6 +7,7 @@ import {
   LMStudio,
 } from "@/components/logos";
 import Link from "next/link";
+import curated from "@/lib/models/curated-models.json";
 
 export default function IntegrationsSection() {
   return (
@@ -22,6 +23,25 @@ export default function IntegrationsSection() {
                 Connect seamlessly with popular, open source llms to enhance
                 your workflow.
               </p>
+              <div>
+                <p className="text-sm font-medium">
+                  Supported models{" "}
+                  <span className="text-muted-foreground font-normal">
+                    · updated {curated.updated}
+                  </span>
+                </p>
+                <ul className="mt-3 flex flex-wrap gap-2">
+                  {curated.models.map((m) => (
+                    <li
+                      key={m.value}
+                      className="rounded-full border px-3 py-1 text-xs"
+                      title={`${m.provider} · ${m.category} · ~${m.sizeGB} GB`}
+                    >
+                      {m.label}
+                    </li>
+                  ))}
+                </ul>
+              </div>
               <div className="flex gap-4 items-center justify-center">
                 <Link
                   href="/chat"

@@ -28,11 +28,67 @@ print_banner() {
   echo ""
 }
 
+# Curated models offered by the installer (keep in sync with lib/models/curated-models.json)
+DEFAULT_MODELS="gemma4"
+MODEL_MENU=(
+  "gemma4|Gemma 4 (Google) — general, vision|6.6 GB"
+  "qwen3.5|Qwen 3.5 (Alibaba) — general, vision|6.6 GB"
+  "qwen3.8|Qwen 3.8 (Alibaba) — newest Qwen, strong all-round|17.7 GB"
+  "gpt-oss|gpt-oss 20B (OpenAI) — reasoning|13.8 GB"
+  "deepseek-r1|DeepSeek R1 — reasoning|5.2 GB"
+  "mimo-v2.6|MiMo V2.6 (Xiaomi) — coding & agents|6.6 GB"
+  "qwen3-coder|Qwen3 Coder — coding|18.6 GB"
+  "qwen3-vl|Qwen3 VL — vision|6.2 GB"
+  "llama3.2|Llama 3.2 3B (Meta) — small & fast|2.0 GB"
+  "lfm3|LFM3 1.7B (Liquid AI) — tiny, runs anywhere|1.1 GB"
+)
+
+# Decide which models to pull.
+# Priority: SPECTRAVERSE_MODELS env var (space/comma separated) > interactive menu > default.
+# The menu reads from /dev/tty so it also works with `curl ... | bash`.
+choose_models() {
+  if [ -n "${SPECTRAVERSE_MODELS:-}" ]; then
+    SELECTED_MODELS=$(echo "$SPECTRAVERSE_MODELS" | tr ',' ' ')
+    return 0
+  fi
+
+  SELECTED_MODELS="$DEFAULT_MODELS"
+  if ! { exec 3</dev/tty; } 2>/dev/null; then
+    return 0
+  fi
+
+  echo -e "  ${YELLOW}Choose models to download${NC} ${DIM}(e.g. 1 5 9 — press Enter for Gemma 4)${NC}"
+  local i=1
+  for entry in "${MODEL_MENU[@]}"; do
+    IFS='|' read -r name desc size <<< "$entry"
+    printf "  ${CYAN}%2d${NC}) %-50s ${DIM}%s${NC}\n" "$i" "$desc" "$size"
+    i=$((i + 1))
+  done
+  printf "  > "
+  local answer=""
+  read -r answer <&3 || true
+  exec 3<&-
+
+  if [ -n "$answer" ]; then
+    local picked=""
+    for n in $(echo "$answer" | tr ',' ' '); do
+      if [[ "$n" =~ ^[0-9]+$ ]] && [ "$n" -ge 1 ] && [ "$n" -le "${#MODEL_MENU[@]}" ]; then
+        IFS='|' read -r name _ <<< "${MODEL_MENU[$((n - 1))]}"
+        picked="$picked $name"
+      fi
+    done
+    if [ -n "$picked" ]; then
+      SELECTED_MODELS="${picked# }"
+    fi
+  fi
+  echo ""
+}
+
 print_install_info() {
   echo -e "  This script will install the following on your local system:"
   echo ""
   echo -e "  ${CYAN}•${NC} ${BLUE}Ollama${NC}           AI model runtime  (native macOS — uses Metal GPU)"
-  echo -e "  ${CYAN}•${NC} ${BLUE}gemma4${NC}           Google Gemma 4 language model"
+  echo -e "  ${CYAN}•${NC} ${BLUE}AI models${NC}        Gemma 4 by default — or pick others from a list"
   echo -e "  ${CYAN}•${NC} ${BLUE}sqld${NC}             Local database     (Docker container)"
   echo ""
 }
@@ -148,7 +204,7 @@ wait_for_sqld() {
 run_migrations() {
   print_step "Running database migrations..."
 
-  curl -sf -X POST "http://localhost:${SQLD_PORT}/v2/pipeline" \
+  curl -sf -o /dev/null -X POST "http://localhost:${SQLD_PORT}/v2/pipeline" \
     -H "Content-Type: application/json" \
     -d @- <<'MIGRATION'
 {
@@ -187,17 +243,43 @@ install_ollama_native() {
   print_success "Ollama installed"
 }
 
+# Returns 0 if Ollama accepts browser requests from another origin (CORS enabled)
+ollama_cors_ok() {
+  local code
+  code=$(curl -s -o /dev/null -w "%{http_code}" -H "Origin: https://spectraverseinc.com" \
+    http://localhost:${OLLAMA_PORT}/api/tags 2>/dev/null || true)
+  [ "$code" = "200" ]
+}
+
 # Start Ollama server if not already running
 start_ollama_native() {
   print_step "Starting Ollama server..."
 
+  export OLLAMA_ORIGINS="*"
+
   if curl -s http://localhost:${OLLAMA_PORT}/api/tags >/dev/null 2>&1; then
-    print_success "Ollama is already running"
-    return 0
+    if ollama_cors_ok; then
+      print_success "Ollama is already running with CORS enabled"
+      return 0
+    fi
+
+    # Running without CORS (usually the Ollama menu-bar app, which starts its
+    # server with its own settings and ignores OLLAMA_ORIGINS). Stop it and run
+    # the server directly with CORS enabled so the browser app can connect.
+    echo -e "  ${DIM}Ollama is running without CORS — restarting it with CORS enabled...${NC}"
+    # Quit the menu-bar app first, otherwise it immediately respawns its own server
+    osascript -e 'tell application "Ollama" to quit' >/dev/null 2>&1 || true
+    pkill -x Ollama >/dev/null 2>&1 || true
+    sleep 2
+    pkill -f "ollama serve" >/dev/null 2>&1 || true
+    local waited=0
+    while curl -s http://localhost:${OLLAMA_PORT}/api/tags >/dev/null 2>&1 && [ $waited -lt 15 ]; do
+      sleep 1
+      waited=$((waited + 1))
+    done
   fi
 
-  export OLLAMA_ORIGINS="*"
-  ollama serve &>/dev/null &
+  nohup ollama serve >"${DATA_DIR}/ollama.log" 2>&1 &
   print_success "Ollama server started"
 }
 
@@ -211,6 +293,10 @@ wait_for_ollama() {
   while [ $count -lt $max_retries ]; do
     if curl -s http://localhost:${OLLAMA_PORT}/api/tags >/dev/null 2>&1; then
       print_success "Ollama is ready"
+      if ! ollama_cors_ok; then
+        echo -e "  ${YELLOW}!${NC} Ollama is up but CORS is not enabled, so the web app can't connect."
+        echo -e "  ${DIM}Quit the Ollama app, then run: OLLAMA_ORIGINS=\"*\" ollama serve${NC}"
+      fi
       return 0
     fi
     count=$((count + 1))
@@ -231,21 +317,21 @@ print_summary() {
   echo -e "  ${BLUE}Ollama API${NC}     http://localhost:${OLLAMA_PORT}  (native)"
   echo -e "  ${BLUE}Database${NC}       http://localhost:${SQLD_PORT}  (Docker)"
   echo -e "  ${BLUE}Data${NC}           ${DATA_DIR}/db"
-  echo -e "  ${BLUE}CORS${NC}           Enabled for this session"
-  echo -e "  ${BLUE}Model${NC}          gemma4"
+  echo -e "  ${BLUE}CORS${NC}           Enabled (server log: ${DATA_DIR}/ollama.log)"
+  echo -e "  ${BLUE}Models${NC}         ${SELECTED_MODELS}"
   echo ""
   echo -e "  ${YELLOW}Commands${NC}"
   echo -e "  ${DIM}────────────────────────────────────────────${NC}"
   echo "  Test Ollama   curl http://localhost:${OLLAMA_PORT}/api/tags"
   echo "  Test DB       curl -s -X POST http://localhost:${SQLD_PORT}/v2/pipeline -H 'Content-Type: application/json' -d '{\"requests\":[{\"type\":\"close\"}]}'"
-  echo "  Chat          ollama run gemma4"
+  echo "  Chat          ollama run ${SELECTED_MODELS%% *}"
   echo "  List models   ollama list"
   echo "  Pull more     ollama pull <model>"
   echo "  Stop DB       docker stop ${SQLD_CONTAINER_NAME}"
   echo "  Start DB      docker start ${SQLD_CONTAINER_NAME}"
   echo ""
-  echo -e "  ${YELLOW}Note:${NC} To keep CORS enabled across restarts, add this to your shell profile:"
-  echo -e "  ${DIM}export OLLAMA_ORIGINS=\"*\"${NC}"
+  echo -e "  ${YELLOW}Note:${NC} After a reboot, start Ollama with CORS enabled (instead of the menu-bar app):"
+  echo -e "  ${DIM}OLLAMA_ORIGINS=\"*\" ollama serve${NC}   ${DIM}— or just re-run this script${NC}"
   echo ""
 }
 
@@ -253,6 +339,7 @@ print_summary() {
 main() {
   print_banner
   print_install_info
+  choose_models
 
   check_docker
 
@@ -266,9 +353,11 @@ main() {
   start_ollama_native
   wait_for_ollama
 
-  print_step "Pulling gemma4..."
-  ollama pull gemma4
-  print_success "gemma4 installed"
+  for model in $SELECTED_MODELS; do
+    print_step "Pulling $model..."
+    ollama pull "$model"
+    print_success "$model installed"
+  done
 
   print_summary
 }

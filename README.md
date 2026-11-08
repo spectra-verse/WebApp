@@ -35,7 +35,7 @@ Spectraverse is a modern web application that allows users to interact with AI m
 - Messages are sent directly from the browser to the user's local Ollama instance
 - No server-side AI processing (ensures privacy and zero cloud costs)
 - Responses stream in real-time for immediate feedback
-- Both user messages and AI responses are persisted to a local sqld database (libsql-server running in Docker on `localhost:8080`) via a client-side database call
+- Both user messages and AI responses are persisted to a local sqld database (libsql-server running in Docker on `localhost:8190`) via a client-side database call
 
 **4. Settings & Customization**
 
@@ -56,7 +56,7 @@ Spectraverse is a modern web application that allows users to interact with AI m
 
 ### Database & ORM
 
-- **sqld / LibSQL** - Local database server running in Docker on `localhost:8080`
+- **sqld / LibSQL** - Local database server running in Docker on `localhost:8190`
 - **@libsql/client** - Client-side LibSQL driver (web variant)
 - **Drizzle ORM 0.44** - Type-safe database operations
 
@@ -88,7 +88,7 @@ Spectraverse is a modern web application that allows users to interact with AI m
 
 ### Database & ORM
 
-- **@libsql/client** - Client-side driver for sqld/LibSQL (web variant, connects to `localhost:8080`)
+- **@libsql/client** - Client-side driver for sqld/LibSQL (web variant, connects to `localhost:8190`)
 - **drizzle-orm** (^0.44.5) - Type-safe ORM with excellent TypeScript support
 - **drizzle-kit** (^0.31.4) - Database migration and schema management CLI
 
@@ -136,30 +136,44 @@ Spectraverse is a modern web application that allows users to interact with AI m
 Before running this project, ensure you have:
 
 - **Node.js** (v18 or higher recommended)
-- **Docker** - [Install Docker Desktop](https://www.docker.com/products/docker-desktop/) — used to run Ollama and the local database
+- **Docker** - [Install Docker Desktop](https://www.docker.com/products/docker-desktop/) — used to run the local database (and Ollama, unless you use the macOS native script)
 
 ## Installation & Setup
 
 ### 1. Clone and Install Dependencies
 
 ```bash
-git clone <repository-url>
-cd spectraverse
+git clone https://github.com/spectra-verse/WebApp.git
+cd WebApp
 npm install
 ```
 
 ### 2. Run the Setup Script
 
-The setup script installs and starts both Ollama and the local database (sqld) in Docker, runs schema migrations, and lets you choose which AI models to download:
+The setup script starts the local database (sqld) in Docker, runs schema migrations, installs Ollama with CORS enabled, and lets you choose which AI models to download (Gemma 4 by default).
 
-```bash
-bash scripts/spectraverse-install.sh
-```
+| Platform | Command | Ollama runs |
+|---|---|---|
+| macOS (recommended) | `bash scripts/spectraverse-install-mac-native.sh` | Natively (Metal GPU) |
+| macOS / Linux | `bash scripts/spectraverse-install.sh` | In Docker |
+| Windows (PowerShell) | `powershell -ExecutionPolicy Bypass -File scripts\spectraverse-install.ps1` | In Docker |
 
 This sets up:
-- **Ollama** container on `localhost:11434` with CORS enabled
-- **sqld** (LibSQL) container on `localhost:8080` with the full database schema
+- **Ollama** on `localhost:11434` with CORS enabled (so the browser app can reach it)
+- **sqld** (LibSQL) container `spectraverse-db` on `localhost:8190` with the full database schema
 - Your chosen Ollama models
+
+**Choosing models.** On macOS/Linux the script shows a numbered menu; press Enter for Gemma 4. To skip the menu (e.g. in CI) set `SPECTRAVERSE_MODELS`:
+
+```bash
+SPECTRAVERSE_MODELS="gemma4 qwen3.5" bash scripts/spectraverse-install-mac-native.sh
+```
+
+On Windows: `$env:SPECTRAVERSE_MODELS = "gemma4 qwen3.5"` before running the script.
+
+## Supported Models
+
+Any Ollama model works. The curated list shown on the landing page, in **Settings → Install New Models**, and in the install menus lives in [`lib/models/curated-models.json`](lib/models/curated-models.json) and is reviewed weekly against the [Ollama library](https://ollama.com/library). Current picks include Gemma 4, Qwen 3.5 / 3.8, gpt-oss, DeepSeek R1, MiMo V2.6, Qwen3 Coder, Qwen3 VL, Llama 3.2 and LFM3. See [CHANGELOG.md](CHANGELOG.md) for updates.
 
 ### 3. Start Development Server
 
@@ -205,7 +219,7 @@ spectraverse/
 ├── lib/                     # Core business logic
 │   ├── actions/            # Client-callable action functions
 │   ├── db/                 # Database utilities
-│   ├── client-db.ts        # LibSQL client (connects to localhost:8080)
+│   ├── client-db.ts        # LibSQL client (connects to localhost:8190)
 │   └── ollama/             # Ollama integration
 ├── hooks/                   # Custom React hooks
 │   ├── useOllamaChat.ts    # Chat logic & streaming
@@ -226,8 +240,9 @@ spectraverse/
 
 For the AI chat to work, users must:
 
-1. **Run the setup script** — `bash scripts/spectraverse-install.sh` — which installs Ollama via Docker with CORS pre-configured and lets you choose models to download
-2. **Keep the Docker containers running** while using the chat interface (`docker start ollama spectraverse-db`)
+1. **Run the setup script** (see [Run the Setup Script](#2-run-the-setup-script)), which installs Ollama with CORS pre-configured and lets you choose models to download
+2. **Keep Ollama and the database running** while using the chat interface — Docker install: `docker start ollama spectraverse-db`; macOS native: open the Ollama app and `docker start spectraverse-db`
+3. **If chat can't connect** on macOS native, Ollama is probably running without CORS (the Ollama menu-bar app ignores `OLLAMA_ORIGINS`): quit the Ollama app and run `OLLAMA_ORIGINS="*" ollama serve`, or re-run the setup script
 
 The Settings page in the app provides connection testing and lets you pull additional models.
 

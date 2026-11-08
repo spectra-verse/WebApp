@@ -8,6 +8,13 @@ $ErrorActionPreference = "Stop"
 $ContainerName     = "ollama"
 $OllamaPort        = 11434
 $SqldContainerName = "spectraverse-db"
+
+# Models to pull. Override with e.g.  $env:SPECTRAVERSE_MODELS = "gemma4 qwen3.5"
+# Popular options: gemma4, qwen3.5, qwen3.8, gpt-oss, deepseek-r1, mimo-v2.6, qwen3-coder, qwen3-vl, llama3.2, lfm3
+$SelectedModels = @("gemma4")
+if ($env:SPECTRAVERSE_MODELS) {
+    $SelectedModels = @($env:SPECTRAVERSE_MODELS -split '[,\s]+' | Where-Object { $_ })
+}
 $SqldPort          = 8190
 $DataDir           = "$env:USERPROFILE\.spectraverse"
 
@@ -28,8 +35,8 @@ function Print-InstallInfo {
     Write-Host "Ollama          " -ForegroundColor Blue -NoNewline
     Write-Host "AI model runtime (Docker container)"
     Write-Host "  • " -ForegroundColor Cyan -NoNewline
-    Write-Host "gemma4          " -ForegroundColor Blue -NoNewline
-    Write-Host "Google Gemma 4 language model"
+    Write-Host "AI models       " -ForegroundColor Blue -NoNewline
+    Write-Host ($SelectedModels -join ", ")
     Write-Host "  • " -ForegroundColor Cyan -NoNewline
     Write-Host "sqld            " -ForegroundColor Blue -NoNewline
     Write-Host "Local database (Docker container)"
@@ -213,12 +220,12 @@ function Print-Summary {
     Write-Host "  Database    " -ForegroundColor Blue -NoNewline; Write-Host "http://localhost:${SqldPort}"
     Write-Host "  Data        " -ForegroundColor Blue -NoNewline; Write-Host "$DataDir\db"
     Write-Host "  CORS        " -ForegroundColor Blue -NoNewline; Write-Host "Enabled for all origins (*)"
-    Write-Host "  Model       " -ForegroundColor Blue -NoNewline; Write-Host "gemma4"
+    Write-Host "  Models      " -ForegroundColor Blue -NoNewline; Write-Host ($SelectedModels -join " ")
     Write-Host ""
     Write-Host "  Commands" -ForegroundColor Yellow
     Write-Host "  ────────────────────────────────────────────" -ForegroundColor DarkGray
     Write-Host "  Test Ollama   curl http://localhost:${OllamaPort}/api/tags"
-    Write-Host "  Chat          docker exec -it $ContainerName ollama run gemma4"
+    Write-Host "  Chat          docker exec -it $ContainerName ollama run $($SelectedModels[0])"
     Write-Host "  List models   docker exec $ContainerName ollama list"
     Write-Host "  Pull more     docker exec $ContainerName ollama pull <model>"
     Write-Host "  Stop all      docker stop $ContainerName $SqldContainerName"
@@ -240,8 +247,10 @@ Run-Migrations
 Setup-Ollama
 Wait-ForOllama
 
-Print-Step "Pulling gemma4..."
-docker exec $ContainerName ollama pull gemma4
-Print-Success "gemma4 installed"
+foreach ($model in $SelectedModels) {
+    Print-Step "Pulling $model..."
+    docker exec $ContainerName ollama pull $model
+    Print-Success "$model installed"
+}
 
 Print-Summary

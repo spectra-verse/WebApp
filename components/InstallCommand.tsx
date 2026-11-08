@@ -16,11 +16,11 @@ const COMMANDS: Record<Tab, string> = {
 };
 
 const STEP_TWO_DESC: Record<Tab, string> = {
-  macos: "Installs Ollama, pulls the Gemma 4 model, and starts the local database — all in Docker.",
+  macos: "Installs Ollama and the local database in Docker, then lets you pick which AI models to download (Gemma 4 by default).",
   "macos-native":
-    "Installs Ollama natively via Homebrew for Metal GPU acceleration, and starts the local database in Docker.",
+    "Installs Ollama natively via Homebrew for Metal GPU acceleration, starts the local database in Docker, and lets you pick which AI models to download (Gemma 4 by default).",
   windows:
-    "Installs Ollama, pulls the Gemma 4 model, and starts the local database — all in Docker.",
+    "Installs Ollama and the local database in Docker and pulls Gemma 4. To choose other models, set $env:SPECTRAVERSE_MODELS first (e.g. \"gemma4 qwen3.5\").",
 };
 
 export default function InstallCommand() {

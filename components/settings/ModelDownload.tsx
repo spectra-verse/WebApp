@@ -11,14 +11,25 @@ import {
 } from "@/components/ui/select";
 import { Check, Copy, Terminal } from "lucide-react";
 
-const CURATED_MODELS = [
-  { value: "gemma4", label: "Gemma 4" },
-  { value: "llama4", label: "Llama 4" },
-  { value: "qwen2.5", label: "Qwen 2.5" },
-  { value: "deepseek-r1:latest", label: "DeepSeek R1" },
-  { value: "deepseek-coder-v2", label: "DeepSeek Coder V2" },
-  { value: "phi3", label: "Phi-3" },
-];
+import curated from "@/lib/models/curated-models.json";
+
+type CuratedModel = {
+  value: string;
+  label: string;
+  provider: string;
+  category: string;
+  sizeGB: number;
+  capabilities: string[];
+};
+
+const CURATED_MODELS: CuratedModel[] = curated.models;
+
+type InstallMode = "native" | "docker";
+
+const PULL_COMMANDS: Record<InstallMode, (model: string) => string> = {
+  native: (model) => `ollama pull ${model}`,
+  docker: (model) => `docker exec ollama ollama pull ${model}`,
+};
 
 interface ModelDownloadProps {
   onDownloadComplete?: () => void;
@@ -30,11 +41,19 @@ export default function ModelDownload({
 }: ModelDownloadProps) {
   const [selectedModel, setSelectedModel] = useState<string>("");
   const [copied, setCopied] = useState(false);
+  const [installMode, setInstallMode] = useState<InstallMode>("native");
 
-  const command = `docker exec ollama ollama pull ${selectedModel}`;
+  const command = PULL_COMMANDS[installMode](selectedModel);
+  const selected = CURATED_MODELS.find((m) => m.value === selectedModel);
 
+  // Ollama reports installed models with a tag (e.g. "gemma4:latest"), so
+  // treat "gemma4" and "gemma4:latest" as the same model.
+  const normalize = (name: string) =>
+    name.includes(":") ? name : `${name}:latest`;
   const isModelInstalled = (modelValue: string) =>
-    installedModels.some((installed) => installed === modelValue);
+    installedModels.some(
+      (installed) => normalize(installed) === normalize(modelValue),
+    );
 
   const handleCopy = () => {
     navigator.clipboard.writeText(command);
@@ -54,7 +73,7 @@ export default function ModelDownload({
       </div>
 
       <Select value={selectedModel} onValueChange={setSelectedModel}>
-        <SelectTrigger className="w-full sm:w-64">
+        <SelectTrigger className="w-full sm:w-96">
           <SelectValue placeholder="Select a model" />
         </SelectTrigger>
         <SelectContent>
@@ -63,6 +82,9 @@ export default function ModelDownload({
             return (
               <SelectItem key={model.value} value={model.value}>
                 {model.label}
+                <span className="ml-2 text-xs text-muted-foreground">
+                  {model.category} · {model.sizeGB} GB
+                </span>
                 {installed && (
                   <span className="ml-2 text-xs text-green-600 dark:text-green-400">
                     (Installed)
@@ -83,9 +105,29 @@ export default function ModelDownload({
             </div>
           ) : (
             <>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              {selected && (
+                <p className="text-sm text-muted-foreground">
+                  {selected.provider} · ~{selected.sizeGB} GB download
+                  {selected.capabilities.length > 0 &&
+                    ` · ${selected.capabilities.join(", ")}`}
+                </p>
+              )}
+              <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                 <Terminal className="w-4 h-4" />
                 <span>Run this command in your terminal</span>
+                <div className="ml-auto flex gap-1">
+                  {(["native", "docker"] as InstallMode[]).map((mode) => (
+                    <Button
+                      key={mode}
+                      variant={installMode === mode ? "secondary" : "ghost"}
+                      size="sm"
+                      className="h-6 px-2 text-xs"
+                      onClick={() => setInstallMode(mode)}
+                    >
+                      {mode === "native" ? "Native Ollama" : "Docker"}
+                    </Button>
+                  ))}
+                </div>
               </div>
               <div className="flex items-center gap-2 rounded-md border bg-muted px-3 py-2 font-mono text-sm">
                 <span className="flex-1 select-all">{command}</span>

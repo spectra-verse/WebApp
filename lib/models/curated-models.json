@@ -1,0 +1,20 @@
+{
+  "updated": "2026-11-08",
+  "source": "https://ollama.com/library",
+  "defaultModel": "gemma4",
+  "models": [
+    { "value": "gemma4", "label": "Gemma 4", "provider": "Google", "category": "General", "sizeGB": 6.6, "capabilities": ["vision", "tools", "thinking"] },
+    { "value": "qwen3.8", "label": "Qwen 3.8", "provider": "Alibaba", "category": "General", "sizeGB": 17.7, "capabilities": ["vision", "tools", "thinking"] },
+    { "value": "qwen3.6", "label": "Qwen 3.6", "provider": "Alibaba", "category": "General", "sizeGB": 22.6, "capabilities": ["vision", "tools", "thinking"] },
+    { "value": "qwen3.5", "label": "Qwen 3.5", "provider": "Alibaba", "category": "General", "sizeGB": 6.6, "capabilities": ["vision", "tools", "thinking"] },
+    { "value": "gpt-oss", "label": "gpt-oss (20B)", "provider": "OpenAI", "category": "Reasoning", "sizeGB": 13.8, "capabilities": ["tools", "thinking"] },
+    { "value": "deepseek-r1", "label": "DeepSeek R1", "provider": "DeepSeek", "category": "Reasoning", "sizeGB": 5.2, "capabilities": ["tools", "thinking"] },
+    { "value": "mimo-v2.6", "label": "MiMo V2.6", "provider": "Xiaomi", "category": "Coding", "sizeGB": 6.6, "capabilities": ["vision", "tools", "thinking"] },
+    { "value": "qwen3-coder", "label": "Qwen3 Coder", "provider": "Alibaba", "category": "Coding", "sizeGB": 18.6, "capabilities": ["tools"] },
+    { "value": "deepseek-coder-v2", "label": "DeepSeek Coder V2", "provider": "DeepSeek", "category": "Coding", "sizeGB": 8.9, "capabilities": [] },
+    { "value": "qwen3-vl", "label": "Qwen3 VL", "provider": "Alibaba", "category": "Vision", "sizeGB": 6.2, "capabilities": ["vision", "tools", "thinking"] },
+    { "value": "phi4", "label": "Phi-4", "provider": "Microsoft", "category": "General", "sizeGB": 9.1, "capabilities": [] },
+    { "value": "llama3.2", "label": "Llama 3.2 (3B)", "provider": "Meta", "category": "Small", "sizeGB": 2.0, "capabilities": ["tools"] },
+    { "value": "lfm3", "label": "LFM3 (1.7B)", "provider": "Liquid AI", "category": "Small", "sizeGB": 1.1, "capabilities": ["tools", "thinking"] }
+  ]
+}

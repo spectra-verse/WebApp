@@ -22,8 +22,8 @@ export default function HeroSection() {
                   docs, debug your web apps all with Spectraverse interface.
                 </p>
                 <p className="mx-auto mt-6 max-w-2xl text-wrap sm:hidden">
-                  Highly customizable components for building modern websites
-                  and applications, with your personal spark.
+                  Chat with the latest open-source AI models, privately, on
+                  your own computer.
                 </p>
 
                 <div className="mt-8 flex justify-center">

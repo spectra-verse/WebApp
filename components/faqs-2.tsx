@@ -7,6 +7,12 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import Link from "next/link";
+import curated from "@/lib/models/curated-models.json";
+
+const featuredModels = curated.models
+  .slice(0, 5)
+  .map((m) => m.label)
+  .join(", ");
 
 export default function FAQsTwo() {
   const faqItems = [
@@ -14,7 +20,7 @@ export default function FAQsTwo() {
       id: "item-1",
       question: "What is Spectraverse?",
       answer:
-        "Spectraverse is an integrated webapp to seamlessly use Ollama supported open source LLM models such as Gemma 4, llama3.1, deepseek-r1 , etc.",
+        `Spectraverse is an integrated web app to seamlessly use Ollama-supported open-source LLMs such as ${featuredModels} and more.`,
     },
     {
       id: "item-2",
@@ -26,7 +32,7 @@ export default function FAQsTwo() {
       id: "item-3",
       question: "Where can I use different AI models?",
       answer:
-        " You can use Spectraverse's AI Playground to use different models, such as Gemma 4, llama3.1, deepseek-r1 and more. ",
+        `You can switch between any model installed in Ollama from the chat screen. Popular choices include ${featuredModels}. Install more from Settings → Install New Models.`,
     },
     {
       id: "item-4",
