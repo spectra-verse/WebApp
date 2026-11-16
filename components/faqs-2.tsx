@@ -24,9 +24,9 @@ export default function FAQsTwo() {
     },
     {
       id: "item-2",
-      question: "What are LLM?",
+      question: "What are LLMs?",
       answer:
-        "LLM stands for Large Language Model. It's a type of artificial intelligence model trained on vast amounts of text data to understand and generate human-like text. These models, like Gemma 4, can perform various tasks, such as answering questions, generating content, translating languages, and more, by leveraging patterns learned from the data they were trained on ",
+        "LLM stands for Large Language Model. It's a type of artificial intelligence model trained on vast amounts of text data to understand and generate human-like text. These models, like Gemma 4, can perform various tasks, such as answering questions, generating content, translating languages, and more, by leveraging patterns learned from the data they were trained on.",
     },
     {
       id: "item-3",
@@ -36,8 +36,8 @@ export default function FAQsTwo() {
     },
     {
       id: "item-4",
-      question: "Is Spectraverse Free to use?",
-      answer: "Spectraverse is free for use, forever.",
+      question: "Is Spectraverse free to use?",
+      answer: "Yes. Spectraverse is free to use, forever.",
     },
     {
       id: "item-5",

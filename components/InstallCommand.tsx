@@ -15,6 +15,13 @@ const COMMANDS: Record<Tab, string> = {
     "irm https://spectraverseinc.com/install.ps1 | iex",
 };
 
+const STEP_ONE_DESC: Record<Tab, string> = {
+  macos: "Ollama and the local database run inside Docker containers.",
+  "macos-native":
+    "The local database runs in a Docker container (Ollama is installed natively).",
+  windows: "Ollama and the local database run inside Docker containers.",
+};
+
 const STEP_TWO_DESC: Record<Tab, string> = {
   macos: "Installs Ollama and the local database in Docker, then lets you pick which AI models to download (Gemma 4 by default).",
   "macos-native":
@@ -69,8 +76,8 @@ export default function InstallCommand() {
                 <span className="font-semibold text-sm">Install Docker Desktop</span>
               </div>
               <p className="text-sm text-muted-foreground mb-2">
-                Ollama and the local database run inside Docker containers.
-                Install Docker Desktop and make sure it&apos;s running before continuing.
+                {STEP_ONE_DESC[activeTab]} Install Docker Desktop and make
+                sure it&apos;s running before continuing.
               </p>
               <a
                 href="https://www.docker.com/get-started/"

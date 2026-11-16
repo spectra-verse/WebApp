@@ -1,11 +1,10 @@
 import {
   Ollama,
   Gemma,
-  DeepSeek,
   Qwen,
   Mistral,
-  LMStudio,
 } from "@/components/logos";
+import { Cpu, Sparkles } from "lucide-react";
 import Link from "next/link";
 import curated from "@/lib/models/curated-models.json";
 
@@ -20,7 +19,7 @@ export default function IntegrationsSection() {
                 Integrate with your favorite LLMs
               </h2>
               <p className="text-muted-foreground">
-                Connect seamlessly with popular, open source llms to enhance
+                Connect seamlessly with popular open-source LLMs to enhance
                 your workflow.
               </p>
               <div>
@@ -71,9 +70,9 @@ export default function IntegrationsSection() {
                   description="Lightweight, open models from Google DeepMind."
                 />
                 <Integration
-                  icon={<DeepSeek className="size-10" />}
-                  name="DeepSeek"
-                  description="High-performance open-source reasoning models."
+                  icon={<Sparkles className="size-10" />}
+                  name="gpt-oss"
+                  description="OpenAI's open-weight reasoning model, run locally."
                 />
                 <Integration
                   icon={<Qwen className="size-10" />}
@@ -86,9 +85,9 @@ export default function IntegrationsSection() {
                   description="Fast, efficient open-weight models from Mistral AI."
                 />
                 <Integration
-                  icon={<LMStudio className="size-10" />}
-                  name="LM Studio"
-                  description="Discover, download, and run local LLMs with ease."
+                  icon={<Cpu className="size-10" />}
+                  name="Granite & Nemotron"
+                  description="Compact models from IBM and NVIDIA for everyday Macs."
                 />
               </div>
             </div>

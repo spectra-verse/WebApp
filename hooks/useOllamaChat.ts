@@ -73,7 +73,7 @@ export function useOllamaChat({
           await streamOllamaChat(
             ollamaUrl,
             {
-              model: body.model || "deepseek-r1:8b",
+              model: body.model || "gemma4",
               messages: ollamaMessages,
             },
             (chunk, done) => {
