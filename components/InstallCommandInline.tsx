@@ -7,9 +7,9 @@ type Tab = "macos" | "windows";
 
 const COMMANDS: Record<Tab, string> = {
   macos:
-    "curl -fsSL https://cdn.jsdelivr.net/gh/spectra-verse/WebApp@main/scripts/spectraverse-install.sh | bash",
+    "curl -fsSL https://spectraverseinc.com/install.sh | bash",
   windows:
-    "https://cdn.jsdelivr.net/gh/spectra-verse/WebApp@main/scripts/spectraverse-install.ps1",
+    "irm https://spectraverseinc.com/install.ps1 | iex",
 };
 
 export default function InstallCommandInline() {

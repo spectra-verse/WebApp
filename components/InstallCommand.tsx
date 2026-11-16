@@ -8,11 +8,11 @@ type Tab = "macos" | "macos-native" | "windows";
 
 const COMMANDS: Record<Tab, string> = {
   macos:
-    "curl -fsSL https://cdn.jsdelivr.net/gh/spectra-verse/WebApp@main/scripts/spectraverse-install.sh | bash",
+    "curl -fsSL https://spectraverseinc.com/install.sh | bash",
   "macos-native":
-    "curl -fsSL https://cdn.jsdelivr.net/gh/spectra-verse/WebApp@main/scripts/spectraverse-install-mac-native.sh | bash",
+    "curl -fsSL https://spectraverseinc.com/install-mac.sh | bash",
   windows:
-    "https://cdn.jsdelivr.net/gh/spectra-verse/WebApp@main/scripts/spectraverse-install.ps1",
+    "irm https://spectraverseinc.com/install.ps1 | iex",
 };
 
 const STEP_TWO_DESC: Record<Tab, string> = {

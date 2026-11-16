@@ -1,6 +1,6 @@
 # Spectraverse Setup Script — Windows (PowerShell)
 # Sets up Ollama and the local database (sqld) in Docker
-# Usage: irm <gist-url> | iex
+# Usage: irm https://spectraverseinc.com/install.ps1 | iex
 #    or: powershell -ExecutionPolicy Bypass -File spectraverse-install.ps1
 
 $ErrorActionPreference = "Stop"
